@@ -1,7 +1,6 @@
-# MapUnivo
+# 🎓 MapUnivo
 Una pagina para orientar a todos los de esta Universidad
 
-# 🎓 UNIVO Maps
 
 > Mapa interactivo del campus universitario de la **Universidad de Oriente (UNIVO)** — Campus San Miguel, El Salvador.
 
