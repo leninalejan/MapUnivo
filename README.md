@@ -157,7 +157,7 @@ psql --version   # psql (PostgreSQL) 14.x o superior
 
 ```bash
 git clone https://github.com/tu-usuario/univo-maps.git
-cd univo-maps
+cd MapUnivo
 ```
 
 ### 2. Instalar dependencias del frontend
@@ -217,7 +217,7 @@ Esto creará todas las tablas y cargará los datos iniciales del campus.
 ```bash
 cd backend
 node server.js
-# ✅ UNIVO Maps API corriendo en http://localhost:3001
+# ✅ MapUnivo API corriendo en http://localhost:3001
 ```
 
 ### 8. Iniciar el servidor de desarrollo frontend
