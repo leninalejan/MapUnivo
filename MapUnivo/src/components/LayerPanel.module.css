@@ -1,0 +1,42 @@
+/* src/components/LayerPanel.module.css */
+.panel {
+  width: 210px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px; font-weight: 600;
+}
+.closeBtn {
+  color: var(--muted); font-size: 18px;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px; transition: var(--trans);
+}
+.closeBtn:hover { background: var(--surface2); color: var(--text); }
+.body   { padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+.row {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 8px; border-radius: var(--radius-sm);
+  background: var(--surface2); cursor: pointer; transition: var(--trans);
+}
+.row:hover { background: rgba(255,255,255,.04); }
+.swatch { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+.label  { flex: 1; font-size: 12.5px; }
+.toggle {
+  width: 30px; height: 16px; background: var(--border2);
+  border-radius: 99px; position: relative; transition: var(--trans); flex-shrink: 0;
+}
+.toggle.on { background: var(--accent); }
+.toggle::after {
+  content: ''; position: absolute;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #fff; top: 2px; left: 2px; transition: var(--trans);
+}
+.toggle.on::after { transform: translateX(14px); }

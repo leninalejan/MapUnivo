@@ -1,0 +1,15 @@
+/* src/components/Toast.module.css */
+.wrap {
+  position: fixed; bottom: 40px; left: 50%;
+  transform: translateX(-50%); z-index: 400;
+}
+.toast {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 99px; padding: 10px 20px;
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: var(--shadow-lg);
+  white-space: nowrap;
+}
+.icon { font-size: 15px; }

@@ -1,0 +1,16 @@
+/* src/components/StatusBar.module.css */
+.bar {
+  grid-area: statusbar;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; height: 26px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  font-size: 10.5px; font-family: var(--mono); color: var(--muted);
+}
+.dot {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--green);
+  margin-right: 6px;
+  animation: pulse 2s ease infinite;
+}
+.coords { color: var(--accent2); opacity: 0.9; }

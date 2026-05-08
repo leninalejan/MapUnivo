@@ -1,0 +1,84 @@
+/* src/components/Topbar.module.css */
+.topbar {
+  grid-area: topbar;
+  display: flex; align-items: center; gap: 14px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 50; height: 56px;
+}
+
+/* Brand */
+.brand { display:flex; align-items:center; gap:10px; flex-shrink:0; padding-right:16px; border-right:1px solid var(--border); }
+.brandIcon {
+  width:32px; height:32px; border-radius:8px;
+  background: #fff;
+  border:1px solid rgba(15,94,168,.18);
+  display:flex; align-items:center; justify-content:center;
+  overflow: hidden;
+}
+.brandIcon { border-radius: 50%; }
+.brandIcon img { width:100%; height:100%; object-fit:contain; display:block; }
+.brandName { font-size:16px; font-weight:800; letter-spacing:-0.01em; }
+.brandName span { color: var(--accent2); }
+
+/* Search */
+.searchWrap {
+  flex:1; max-width:480px; position:relative;
+  display:flex; align-items:center; gap:10px;
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:var(--radius-sm); padding:0 14px;
+  transition:var(--trans);
+}
+.searchWrap:focus-within { border-color:var(--accent); box-shadow:0 0 0 3px rgba(15,94,168,.12); }
+.searchIcon { display:flex; width:15px; height:15px; color:var(--muted); flex-shrink:0; }
+.searchIcon svg { width:100%; height:100%; }
+.searchInput { flex:1; height:36px; font-size:13.5px; }
+.searchInput::placeholder { color:var(--muted); }
+
+/* Dropdown */
+.dropdown {
+  position:absolute; top:calc(100% + 6px); left:0; right:0;
+  background:var(--surface); border:1px solid var(--border2);
+  border-radius:var(--radius-sm); box-shadow:var(--shadow-lg);
+  overflow:hidden; z-index:200;
+  animation: fadeIn 0.15s ease both;
+}
+.dropItem {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 14px; cursor:pointer; transition:var(--trans);
+}
+.dropItem:hover { background:var(--surface2); }
+.dropIcon { width:30px; height:30px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.dropInfo  { flex:1; min-width:0; }
+.dropName  { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.dropCat   { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:1px; }
+.dropBadge { font-size:9.5px; font-family:var(--mono); padding:2px 7px; border-radius:99px; background:var(--surface2); color:var(--muted); flex-shrink:0; }
+
+/* Right */
+.right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+.iconBtn {
+  width:36px; height:36px; border-radius:var(--radius-sm);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted); transition:var(--trans);
+}
+.iconBtn svg { width:18px; height:18px; }
+.iconBtn:hover { background:var(--surface2); color:var(--text); }
+.iconBtn.active { background:rgba(15,94,168,.14); color:var(--accent); }
+
+.userPill {
+  display:flex; align-items:center; gap:9px;
+  padding:5px 12px 5px 5px;
+  background:var(--surface2); border:1px solid var(--border2);
+  border-radius:99px; cursor:pointer; transition:var(--trans);
+}
+.userPill:hover { background:var(--surface); }
+.avatar {
+  width:28px; height:28px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700; color:#000; flex-shrink:0;
+}
+.userName { font-size:13px; font-weight:500; }
+.chevron  { display:flex; width:14px; height:14px; color:var(--muted); }
+.chevron svg { width:100%; height:100%; }
