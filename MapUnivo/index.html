@@ -3,12 +3,75 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UNIVO Campus Navigator</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>UNIVOMaps</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
   <body>
+    <div id="boot-loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 20% 20%, rgba(242,181,68,0.12), transparent 24%),radial-gradient(circle at 80% 30%, rgba(15,94,168,0.12), transparent 28%),linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);color:#eef4fb;font-family:Arial,sans-serif;">
+      <div style="max-width:360px;width:100%;padding:24px 26px;border-radius:22px;background:rgba(10,16,24,.82);border:1px solid rgba(255,255,255,.10);box-shadow:0 24px 48px rgba(0,0,0,.24);text-align:center;">
+        <div style="width:40px;height:40px;margin:0 auto 14px;border-radius:999px;border:3px solid rgba(244,248,255,.18);border-top-color:#f2b544;animation:spin 0.9s linear infinite;"></div>
+        <div style="font-size:16px;font-weight:700;letter-spacing:.02em;">Cargando UNIVO Maps</div>
+        <div style="margin-top:8px;font-size:14px;line-height:1.45;color:rgba(244,248,255,.76);">Preparando el plano del campus y las capas visuales...</div>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}} </style>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script nomodule>
+      (function () {
+        var root = document.getElementById('root');
+        if (!root) return;
+
+        root.innerHTML =
+          '<style>' +
+          'html,body,#root{height:100%;margin:0;font-family:Arial,sans-serif;background:#06111c;color:#eef4fb;overflow:hidden;}' +
+          '.legacyApp{display:flex;flex-direction:column;height:100%;}' +
+          '.legacyTop{height:54px;display:flex;align-items:center;padding:0 16px;background:#0d1c2b;border-bottom:1px solid rgba(255,255,255,.08);}' +
+          '.legacyBrand{font-weight:700;letter-spacing:.2px;}' +
+          '.legacyBrand span{color:#f2b544;}' +
+          '.legacyBody{display:flex;flex:1;min-height:0;}' +
+          '.legacySide{width:270px;background:#0d1c2b;border-right:1px solid rgba(255,255,255,.08);padding:14px 12px;overflow:auto;box-sizing:border-box;}' +
+          '.legacySide h2{font-size:12px;margin:0 0 10px;color:#94a9c0;text-transform:uppercase;letter-spacing:.08em;}' +
+          '.legacyItem{font-size:13px;line-height:1.35;padding:8px 10px;margin:0 0 8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;}' +
+          '.legacyMapWrap{position:relative;flex:1;overflow:hidden;background:#091725;}' +
+          '.legacyMapPdf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#f4f1e7;}' +
+          '.legacyMapFallback{position:absolute;inset:0;background:url("/campus_map.jpg") center center / cover no-repeat;filter:saturate(1.05) contrast(1.03);}' +
+          '.legacyShade{position:absolute;inset:0;background:linear-gradient(135deg, rgba(6,17,28,.32), rgba(6,17,28,.04));}' +
+          '.legacyPin{position:absolute;transform:translate(-50%,-100%);background:#ffffff;color:#10243b;border-radius:999px;padding:4px 8px;font-size:12px;white-space:nowrap;box-shadow:0 6px 14px rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.08);}' +
+          '.legacyPin:before{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:#ffffff;transform:rotate(45deg);border-right:1px solid rgba(0,0,0,.08);border-bottom:1px solid rgba(0,0,0,.08);}' +
+          '.legacyDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}' +
+          '.legacyBadge{position:absolute;right:12px;bottom:12px;padding:7px 10px;background:rgba(255,255,255,.88);color:#0f5ea8;border:1px solid rgba(15,94,168,.18);border-radius:8px;font-size:12px;}' +
+          '.legacyNote{position:absolute;left:12px;bottom:12px;padding:7px 10px;background:rgba(255,255,255,.88);color:#5d7288;border:1px solid rgba(0,0,0,.08);border-radius:8px;font-size:12px;max-width:340px;}' +
+          '</style>' +
+          '<div class="legacyApp">' +
+          '<div class="legacyTop"><div class="legacyBrand"><span>UNIVO</span> Maps - Version compatible</div></div>' +
+          '<div class="legacyBody">' +
+          '<aside class="legacySide">' +
+          '<h2>Mapa basico</h2>' +
+          '<div class="legacyItem"><span class="legacyDot" style="background:#f2b544"></span>Entrada Principal</div>' +
+          '<div class="legacyItem"><span class="legacyDot" style="background:#0f5ea8"></span>Bloque Principal de Aulas</div>' +
+          '<div class="legacyItem"><span class="legacyDot" style="background:#0f5ea8"></span>Edificio Administrativo</div>' +
+          '<div class="legacyItem"><span class="legacyDot" style="background:#2eab5e"></span>Area Tres - Zona Norte</div>' +
+          '<div class="legacyItem"><span class="legacyDot" style="background:#2eab5e"></span>Area Dos - Lote Este</div>' +
+          '<div class="legacyItem"><span class="legacyDot" style="background:#f2b544"></span>Carretera Panamericana</div>' +
+          '</aside>' +
+          '<main class="legacyMapWrap">' +
+          '<object class="legacyMapPdf" data="/CAD%20(1).pdf" type="application/pdf"><div class="legacyMapFallback"></div></object>' +
+          '<div class="legacyShade"></div>' +
+          '<div class="legacyPin" style="left:73.5%;top:18.5%;">Entrada Principal</div>' +
+          '<div class="legacyPin" style="left:37%;top:63.5%;">Bloque Principal</div>' +
+          '<div class="legacyPin" style="left:56%;top:62%;">Administrativo</div>' +
+          '<div class="legacyPin" style="left:42%;top:35%;">Area Tres</div>' +
+          '<div class="legacyPin" style="left:83.5%;top:70%;">Area Dos</div>' +
+          '<div class="legacyPin" style="left:28%;top:93%;">CA-1</div>' +
+          '<div class="legacyBadge">Vista de compatibilidad para navegadores antiguos</div>' +
+          '<div class="legacyNote">Tu navegador no soporta el app moderno con React + Vite, pero aqui al menos veras el plano base del campus.</div>' +
+          '</main>' +
+          '</div>' +
+          '</div>';
+      })();
+    </script>
   </body>
 </html>

@@ -1,12 +1,12 @@
-// src/components/InfoPanel.jsx
 import { Icons } from './Icons.jsx'
 import styles from './InfoPanel.module.css'
 
-export default function InfoPanel({ zone, onClose }) {
+export default function InfoPanel({ zone, onClose, onRouteHere }) {
   if (!zone) return null
+  const hasPhone = /\d/.test(zone.tel || '')
 
   const handleShare = () => {
-    navigator.clipboard?.writeText(`${zone.name} — MapUnivo, Campus UNIVO`)
+    navigator.clipboard?.writeText(`${zone.name} - MapUnivo, Campus UNIVO`)
       .then(() => {})
       .catch(() => {})
   }
@@ -27,7 +27,7 @@ export default function InfoPanel({ zone, onClose }) {
           <span className={styles.metaIcon}><Icons.Clock /></span>
           <strong>{zone.horario}</strong>
         </div>
-        {zone.tel !== '—' && (
+        {hasPhone && (
           <div className={styles.metaRow}>
             <span className={styles.metaIcon}><Icons.Phone /></span>
             <strong>{zone.tel}</strong>
@@ -35,14 +35,20 @@ export default function InfoPanel({ zone, onClose }) {
         )}
         <div className={styles.metaRow}>
           <span className={styles.metaIcon}><Icons.Pin /></span>
-          <strong>Ciudad Universitaria · San Miguel</strong>
+          <strong>Ciudad Universitaria - San Miguel</strong>
         </div>
       </div>
 
       <div className={styles.actions}>
         <button
           className={`${styles.btn} ${styles.primary}`}
-          onClick={() => alert(`Calculando ruta hacia ${zone.name}…`)}
+          onClick={() => {
+            if (onRouteHere) {
+              onRouteHere(zone)
+              return
+            }
+            alert(`Calculando ruta hacia ${zone.name}...`)
+          }}
         >
           <span className={styles.btnIco}><Icons.Goto /></span> Ir aquí
         </button>

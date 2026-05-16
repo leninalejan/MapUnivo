@@ -3,8 +3,8 @@
 // Zonas calibradas al plano topográfico oficial UNIVO
 // Escala 1:1000 — Cantón Orrajuelo, San Miguel
 //
-// px / py = porcentaje sobre el área del plano (campus_map.jpg)
-// Origen (0,0) = esquina superior-izquierda del plano recortado
+// px / py = porcentaje sobre el área del plano actualizado (CAD (1).pdf)
+// Origen (0,0) = esquina superior-izquierda del plano 800x600
 //
 // Distribución real del plano:
 //  - ÁREA TRES (norte):  zona verde/baldía 45,784.868 m²
@@ -209,7 +209,3 @@ export const DEMO_USERS = [
   { username: 'admin',      password: 'admin', name: 'María López',   role: 'Administradora del Sistema',    initials: 'ML', carnet: 'ADM-001'     },
   { username: 'docente',    password: 'pass',  name: 'Carlos Rivas',  role: 'Docente · CCEE',                initials: 'CR', carnet: 'DOC-042'     },
 ]
-
-// Google Maps API key placeholder
-export const GOOGLE_MAPS_API_KEY = 'YOUR_API_KEY'
-export const CAMPUS_CENTER = { lat: 13.3392, lng: -88.4420 }

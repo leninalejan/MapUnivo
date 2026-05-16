@@ -16,6 +16,10 @@
   grid-area: map;
   position: relative;
   overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.08), transparent 24%),
+    radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.10), transparent 28%),
+    linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
 }
 
 .layerPanelAnchor {
@@ -23,6 +27,108 @@
   top: 14px;
   right: 62px;
   z-index: 30;
+}
+
+.mapLoading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.08), transparent 24%),
+    radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.12), transparent 28%),
+    linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
+}
+
+.mapLoadingCard {
+  width: min(420px, 100%);
+  padding: 24px 26px;
+  border-radius: 22px;
+  background: rgba(10, 16, 24, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(16px);
+  text-align: center;
+  color: #f4f8ff;
+}
+
+.mapLoadingSpinner {
+  width: 42px;
+  height: 42px;
+  margin: 0 auto 14px;
+  border-radius: 999px;
+  border: 3px solid rgba(244, 248, 255, 0.18);
+  border-top-color: var(--accent2);
+  animation: mapSpin 0.9s linear infinite;
+}
+
+.mapLoadingTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.mapLoadingText {
+  margin-top: 8px;
+  font-size: 0.92rem;
+  color: rgba(244, 248, 255, 0.76);
+  line-height: 1.45;
+}
+
+.appError {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.12), transparent 24%),
+    radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.12), transparent 28%),
+    linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
+}
+
+.appErrorCard {
+  width: min(480px, 100%);
+  padding: 24px 26px;
+  border-radius: 22px;
+  background: rgba(10, 16, 24, 0.80);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(16px);
+  color: #f4f8ff;
+  text-align: center;
+}
+
+.appErrorTitle {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.appErrorText {
+  margin-top: 10px;
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: rgba(244, 248, 255, 0.76);
+}
+
+.appErrorButton {
+  margin-top: 18px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #000;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+@keyframes mapSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 768px) {
