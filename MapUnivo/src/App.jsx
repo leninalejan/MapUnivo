@@ -298,6 +298,8 @@ function MainApp({ user, theme, onToggleTheme }) {
       {showUserMenu && (
         <UserMenu
           user={user}
+          theme={theme}
+          onToggleTheme={onToggleTheme}
           onClose={() => setShowUserMenu(false)}
         />
       )}

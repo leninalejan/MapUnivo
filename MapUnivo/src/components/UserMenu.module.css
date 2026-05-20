@@ -1,35 +1,254 @@
 /* src/components/UserMenu.module.css */
 .menu {
-  position: fixed; top: 62px; right: 14px;
-  width: 240px;
+  position: fixed;
+  top: 62px;
+  right: 14px;
+  width: 280px;
   background: var(--surface);
   border: 1px solid var(--border2);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
-  z-index: 200; overflow: hidden;
+  z-index: 200;
+  overflow: hidden;
 }
+
 .header {
-  display: flex; align-items: center; gap: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding: 16px;
   background: var(--surface2);
   border-bottom: 1px solid var(--border);
 }
-.avatar {
-  width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+
+.avatar,
+.profileAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 700; color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #000;
 }
-.name   { font-size: 14px; font-weight: 600; }
-.role   { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.carnet { font-size: 10px; font-family: var(--mono); color: var(--muted); opacity: 0.7; margin-top: 1px; }
-.divider { height: 1px; background: var(--border); border: none; margin: 0; }
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.role {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.carnet {
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--muted);
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  border: none;
+  margin: 0;
+}
+
 .item {
-  width: 100%; text-align: left; padding: 11px 16px;
-  font-size: 13.5px; color: var(--text);
-  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 16px;
+  font-size: 13.5px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
   transition: var(--trans);
 }
-.item:hover { background: var(--surface2); }
-.danger       { color: var(--red); }
-.danger:hover { background: rgba(239,68,68,.08); }
+
+.item:hover {
+  background: var(--surface2);
+}
+
+.itemIcon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.itemIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.secondary {
+  justify-content: center;
+  color: var(--muted);
+}
+
+.section {
+  padding: 14px;
+}
+
+.sectionTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.backBtn,
+.closeBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.backBtn svg {
+  width: 14px;
+  height: 14px;
+  transform: rotate(90deg);
+}
+
+.closeBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 18px;
+}
+
+.profileCard {
+  padding: 14px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--surface2), var(--surface));
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.profileAvatar {
+  margin: 0 auto 10px;
+}
+
+.profileName {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.profileRole {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.sectionTitle {
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.infoList {
+  margin-top: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+}
+
+.infoLabel {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.infoValue {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
+.settingCard {
+  padding: 12px;
+  border-radius: 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.settingText {
+  min-width: 0;
+}
+
+.settingLabel {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.settingHint {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.toggleThemeBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.toggleThemeBtn svg {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 520px) {
+  .menu {
+    width: calc(100vw - 20px);
+    right: 10px;
+    left: 10px;
+  }
+
+  .settingCard {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toggleThemeBtn {
+    justify-content: center;
+  }
+}
