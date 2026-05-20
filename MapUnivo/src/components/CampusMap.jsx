@@ -17,6 +17,7 @@ function getSafeZoom(map, fallback = 0) {
 export default function CampusMap({ zones, layers, activeZone, onZoneClick, onToggleLayer = () => {}, route = null }) {
   const mapNodeRef = useRef(null)
   const mapRef = useRef(null)
+  const baseLayerRef = useRef(null)
   const markerRefs = useRef({})
   const routeLayerRef = useRef(null)
   const onZoneClickRef = useRef(onZoneClick)
@@ -46,11 +47,27 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
     mapRef.current = map
     map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], 0, { animate: false })
 
+    const basePane = map.createPane('campus-base')
+    basePane.style.zIndex = '200'
+
     const markerPane = map.createPane('campus-markers')
     markerPane.style.zIndex = '650'
 
     const routePane = map.createPane('campus-route')
     routePane.style.zIndex = '550'
+
+    const baseLayer = L.imageOverlay(BASE_MAP_URL, MAP_BOUNDS, {
+      pane: 'campus-base',
+      interactive: false,
+    })
+    baseLayer.on('load', () => {
+      if (alive) setBaseReady(true)
+    })
+    baseLayer.on('error', () => {
+      if (alive) setBaseReady(true)
+    })
+    baseLayer.addTo(map)
+    baseLayerRef.current = baseLayer
 
     const readyTimer = window.setTimeout(() => {
       if (alive) setBaseReady(true)
@@ -110,6 +127,8 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       window.cancelAnimationFrame(rafId)
       window.removeEventListener('resize', handleResize)
       window.clearTimeout(readyTimer)
+      baseLayerRef.current?.remove()
+      baseLayerRef.current = null
       routeLayerRef.current?.remove()
       routeLayerRef.current = null
       map.remove()
@@ -279,6 +298,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       <div
         ref={mapNodeRef}
         className={styles.leafletViewport}
+        style={{ backgroundImage: `url(${BASE_MAP_URL})` }}
         aria-label="Mapa topografico UNIVO"
       />
 

@@ -2,13 +2,23 @@
 const jwt = require('jsonwebtoken')
 
 module.exports = function authJWT(req, res, next) {
-  const header = req.headers['authorization']
-  if (!header) return res.status(401).json({ error: 'Token requerido' })
-  const token = header.split(' ')[1]
+  if (!process.env.JWT_SECRET) {
+    return res.status(500).json({ error: 'JWT_SECRET no configurado' })
+  }
+
+  const header = req.headers.authorization || ''
+  const token = header.startsWith('Bearer ')
+    ? header.slice(7).trim()
+    : header.trim()
+
+  if (!token) {
+    return res.status(401).json({ error: 'Token requerido' })
+  }
+
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET)
-    next()
+    return next()
   } catch {
-    res.status(401).json({ error: 'Token inválido o expirado' })
+    return res.status(401).json({ error: 'Token invalido o expirado' })
   }
 }
