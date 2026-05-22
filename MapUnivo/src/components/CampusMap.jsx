@@ -5,9 +5,10 @@ import { LAYER_CONFIG } from '../data/campusData.js'
 import { MAP_WIDTH, MAP_HEIGHT, MAP_BOUNDS, pointFromZone } from '../data/campusRoutes.js'
 import { Icons } from './Icons.jsx'
 import styles from './CampusMap.module.css'
+import baseMapUrl from '../assets/base-map.svg'
 
 const FIT_PADDING = [24, 24]
-const BASE_MAP_URL = `${import.meta.env.BASE_URL}base-map.svg`
+const BASE_MAP_URL = baseMapUrl
 
 function getSafeZoom(map, fallback = 0) {
   const zoom = map?.getZoom?.()

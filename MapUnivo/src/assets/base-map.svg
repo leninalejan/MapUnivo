@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600" preserveAspectRatio="xMidYMid meet" shape-rendering="geometricPrecision">
+  <defs>
+    <linearGradient id="baseSky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f4f1e7" />
+      <stop offset="100%" stop-color="#d7e3ea" />
+    </linearGradient>
+    <linearGradient id="grassZone" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3d6b35" stop-opacity="0.96" />
+      <stop offset="100%" stop-color="#274427" stop-opacity="0.92" />
+    </linearGradient>
+    <linearGradient id="soilZone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9a8551" stop-opacity="0.92" />
+      <stop offset="100%" stop-color="#c7b57a" stop-opacity="0.70" />
+    </linearGradient>
+    <linearGradient id="roadZone" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7a5d37" />
+      <stop offset="100%" stop-color="#b99155" />
+    </linearGradient>
+    <linearGradient id="buildingZone" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eff3f0" />
+      <stop offset="100%" stop-color="#c7d1d8" />
+    </linearGradient>
+    <pattern id="mapGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="0.5" />
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.4" stdDeviation="1.5" flood-color="#203040" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="800" height="600" fill="url(#baseSky)" />
+  <rect x="0" y="0" width="800" height="600" fill="url(#mapGrid)" opacity="0.14" />
+
+  <path d="M0,0 L190,0 L240,90 L160,180 L0,150 Z" fill="url(#grassZone)" />
+  <path d="M190,120 L420,95 L565,160 L542,330 L380,352 L232,280 L160,200 Z" fill="url(#soilZone)" />
+  <path d="M480,25 L800,35 L800,250 L640,232 L560,140 Z" fill="#556b44" fill-opacity="0.92" />
+  <path d="M560,300 L800,260 L800,600 L560,600 L498,462 Z" fill="#2f4a2d" fill-opacity="0.94" />
+  <path d="M0,378 L154,338 L246,420 L204,600 L0,600 Z" fill="#355339" fill-opacity="0.90" />
+
+  <path d="M0,500 L800,492 L800,600 L0,600 Z" fill="url(#roadZone)" />
+  <path d="M742,0 L800,0 L800,600 L752,600 L724,470 L712,290 Z" fill="#8f6b3f" fill-opacity="0.96" />
+  <path d="M248,462 L438,452 L568,400" fill="none" stroke="#8b6a3d" stroke-width="10" stroke-linecap="round" opacity="0.85" />
+  <path d="M180,260 L322,252 L430,255 L522,268" fill="none" stroke="#f6efe3" stroke-width="3" stroke-linecap="round" stroke-opacity="0.9" />
+  <path d="M505,118 L640,185" fill="none" stroke="#f6efe3" stroke-width="3" stroke-linecap="round" stroke-opacity="0.9" />
+
+  <path d="M165,270 L470,240 L570,298 L548,414 L408,438 L240,420 L155,344 Z" fill="#eef1e7" fill-opacity="0.92" stroke="#d7ddd1" stroke-width="1.2" filter="url(#shadow)" />
+  <rect x="222" y="296" width="198" height="70" rx="10" fill="url(#buildingZone)" stroke="#c8d0d9" stroke-width="1.1" filter="url(#shadow)" />
+  <rect x="432" y="302" width="84" height="66" rx="10" fill="#e1e6ea" stroke="#c7d1d8" stroke-width="1.1" filter="url(#shadow)" />
+  <rect x="312" y="386" width="132" height="40" rx="8" fill="#e9efe5" stroke="#d5ddd0" stroke-width="1" filter="url(#shadow)" />
+  <rect x="146" y="356" width="72" height="52" rx="8" fill="#8ea2af" stroke="#6f8493" stroke-width="1" filter="url(#shadow)" />
+  <rect x="604" y="330" width="48" height="112" rx="8" fill="#edf1ef" stroke="#d5ddd0" stroke-width="1" filter="url(#shadow)" />
+  <rect x="578" y="406" width="88" height="42" rx="8" fill="#dde4d9" stroke="#cdd7c9" stroke-width="1" filter="url(#shadow)" />
+  <rect x="525" y="438" width="54" height="24" rx="6" fill="#f1eadc" stroke="#ddceb7" stroke-width="1" filter="url(#shadow)" />
+
+  <circle cx="110" cy="115" r="5" fill="#ffffff" fill-opacity="0.5" />
+  <circle cx="132" cy="140" r="5" fill="#ffffff" fill-opacity="0.35" />
+  <circle cx="152" cy="128" r="4.5" fill="#ffffff" fill-opacity="0.3" />
+  <circle cx="612" cy="90" r="5" fill="#ffffff" fill-opacity="0.28" />
+  <circle cx="638" cy="118" r="4.5" fill="#ffffff" fill-opacity="0.22" />
+
+  <text x="282" y="228" text-anchor="middle" fill="#2f8f53" fill-opacity="0.72" font-size="7" font-family="Outfit, sans-serif" font-weight="700" letter-spacing="1.2">AREA TRES</text>
+  <text x="430" y="300" text-anchor="middle" fill="#0f5ea8" fill-opacity="0.68" font-size="7" font-family="Outfit, sans-serif" font-weight="700" letter-spacing="1.2">AREA UNO</text>
+  <text x="620" y="314" text-anchor="middle" fill="#2f8f53" fill-opacity="0.62" font-size="6.5" font-family="Outfit, sans-serif" font-weight="700" letter-spacing="1.1">AREA DOS</text>
+  <text x="260" y="487" text-anchor="middle" fill="#7c5c25" fill-opacity="0.80" font-size="6" font-family="Outfit, sans-serif" font-weight="700" letter-spacing="1.8" transform="rotate(-15 260 487)">CARRETERA PANAMERICANA</text>
+  <text x="552" y="270" text-anchor="middle" fill="#7c5c25" fill-opacity="0.80" font-size="5.8" font-family="Outfit, sans-serif" font-weight="700" letter-spacing="1.2" transform="rotate(72 552 270)">CALLE UNIVERSIDAD DE ORIENTE</text>
+  <text x="435" y="360" text-anchor="middle" fill="#28465e" fill-opacity="0.85" font-size="6.2" font-family="Outfit, sans-serif" font-weight="700">Campus UNIVO</text>
+
+  <g transform="translate(155, 160)">
+    <circle r="7" fill="#00d4ff" fill-opacity="0.12" stroke="#00d4ff" stroke-opacity="0.4" stroke-width="0.5" />
+    <text text-anchor="middle" y="3" fill="#00d4ff" font-size="6" font-family="Outfit, sans-serif" font-weight="700" style="pointer-events:none">N</text>
+    <line x1="0" y1="-4" x2="0" y2="-9" stroke="#00d4ff" stroke-opacity="0.6" stroke-width="0.8" />
+    <polygon points="0,-9 -1.5,-6 1.5,-6" fill="#00d4ff" fill-opacity="0.7" />
+  </g>
+
+  <g transform="translate(160, 505)">
+    <line x1="0" y1="0" x2="50" y2="0" stroke="#94a3b8" stroke-width="0.8" />
+    <line x1="0" y1="-2" x2="0" y2="2" stroke="#94a3b8" stroke-width="0.8" />
+    <line x1="50" y1="-2" x2="50" y2="2" stroke="#94a3b8" stroke-width="0.8" />
+    <text x="25" y="-3" text-anchor="middle" fill="#94a3b8" font-size="4" font-family="Outfit, sans-serif" style="pointer-events:none">~100 m</text>
+  </g>
+</svg>
