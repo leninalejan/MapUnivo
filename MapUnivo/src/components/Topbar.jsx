@@ -59,9 +59,18 @@ function SearchBar({ onSelect }) {
   )
 }
 
-export default function Topbar({ user, onSearch, onToggleLayers, onToggleUser, layersOpen, theme, onToggleTheme }) {
+export default function Topbar({ user, onSearch, onToggleLayers, onToggleUser, onToggleSidebar, sidebarOpen, layersOpen, theme, onToggleTheme }) {
   return (
     <header className={styles.topbar}>
+      <button
+        className={`${styles.iconBtn} ${styles.menuBtn} ${sidebarOpen ? styles.active : ''}`}
+        onClick={onToggleSidebar}
+        title="Abrir menu"
+        aria-label="Abrir menu"
+      >
+        <Icons.Menu />
+      </button>
+
       {/* Brand */}
       <div className={styles.brand}>
         <div className={styles.brandIcon}>

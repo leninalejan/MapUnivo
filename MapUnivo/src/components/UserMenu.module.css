@@ -243,6 +243,14 @@
     left: 10px;
   }
 
+  .header {
+    padding: 14px;
+  }
+
+  .item {
+    padding: 12px 14px;
+  }
+
   .settingCard {
     flex-direction: column;
     align-items: stretch;

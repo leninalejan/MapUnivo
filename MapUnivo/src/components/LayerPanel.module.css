@@ -40,3 +40,16 @@
   background: #fff; top: 2px; left: 2px; transition: var(--trans);
 }
 .toggle.on::after { transform: translateX(14px); }
+
+@media (max-width: 760px) {
+  .panel {
+    width: min(320px, calc(100vw - 24px));
+    max-height: calc(100vh - 140px);
+  }
+}
+
+@media (max-width: 520px) {
+  .panel {
+    width: calc(100vw - 20px);
+  }
+}

@@ -14,3 +14,27 @@
   animation: pulse 2s ease infinite;
 }
 .coords { color: var(--accent2); opacity: 0.9; }
+
+@media (max-width: 768px) {
+  .bar {
+    height: auto;
+    min-height: 26px;
+    padding: 4px 12px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 520px) {
+  .bar {
+    font-size: 9.5px;
+  }
+
+  .coords {
+    width: 100%;
+    text-align: center;
+  }
+}

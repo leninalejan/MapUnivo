@@ -123,6 +123,7 @@ function MainApp({ user, theme, onToggleTheme }) {
   const [activeZone,   setActiveZone]   = useState(null)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showLayers,   setShowLayers]   = useState(false)
+  const [sidebarOpen,  setSidebarOpen]  = useState(false)
   const [toast,        setToast]        = useState(null)
   const [routeFrom,    setRouteFrom]    = useState('')
   const [routeTo,      setRouteTo]      = useState('')
@@ -148,6 +149,7 @@ function MainApp({ user, theme, onToggleTheme }) {
     setActiveZone(zone)
     setLayers(prev => (prev[zone.cat] ? prev : { ...prev, [zone.cat]: true }))
     setToast({ msg: zone.name, icon: zone.icon })
+    setSidebarOpen(false)
   }
 
   const handleToggleLayer = (id) => {
@@ -228,15 +230,17 @@ function MainApp({ user, theme, onToggleTheme }) {
   }
 
   return (
-    <div className={styles.app} onClick={() => { setShowUserMenu(false); setShowLayers(false) }}>
+    <div className={styles.app} onClick={() => { setShowUserMenu(false); setShowLayers(false); setSidebarOpen(false) }}>
 
       {/* ── Topbar ── */}
       <Topbar
         user={user}
         onSearch={handleZoneClick}
         layersOpen={showLayers}
+        sidebarOpen={sidebarOpen}
         theme={theme}
         onToggleTheme={onToggleTheme}
+        onToggleSidebar={e => { e.stopPropagation(); setSidebarOpen(p => !p); setShowUserMenu(false); setShowLayers(false) }}
         onToggleLayers={e => { e.stopPropagation(); setShowLayers(p => !p); setShowUserMenu(false) }}
         onToggleUser={e  => { e.stopPropagation(); setShowUserMenu(p => !p); setShowLayers(false) }}
       />
@@ -245,6 +249,8 @@ function MainApp({ user, theme, onToggleTheme }) {
       <Sidebar
         activeZone={activeZone}
         onZoneClick={handleZoneClick}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
         layers={layers}
         onToggleLayer={handleToggleLayer}
         routeFrom={routeFrom}
@@ -259,6 +265,7 @@ function MainApp({ user, theme, onToggleTheme }) {
 
       {/* ── Map area ── */}
       <div className={styles.mapWrapper} onClick={e => e.stopPropagation()}>
+        {sidebarOpen && <div className={styles.mobileBackdrop} onClick={() => setSidebarOpen(false)} />}
         <Suspense fallback={<MapLoadingFallback />}>
           <CampusMap
             zones={CAMPUS_ZONES}

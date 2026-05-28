@@ -163,5 +163,24 @@
 .chip:hover { border-color: var(--accent); color: var(--accent); }
 
 @media (max-width: 480px) {
-  .card { width: 92%; padding: 32px 24px; }
+  .themeBtn {
+    top: 12px;
+    right: 12px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .card {
+    width: calc(100vw - 24px);
+    padding: 28px 18px;
+    border-radius: 18px;
+  }
+
+  .title {
+    font-size: 21px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
 }

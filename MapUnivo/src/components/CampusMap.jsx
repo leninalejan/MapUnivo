@@ -285,21 +285,9 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
 
   return (
     <div className={styles.mapArea}>
-      <div className={styles.staticBaseLayer} aria-hidden="true">
-        <img
-          className={styles.staticBaseImage}
-          src={BASE_MAP_URL}
-          alt=""
-          draggable="false"
-          onLoad={() => setBaseReady(true)}
-          onError={() => setBaseReady(true)}
-        />
-      </div>
-
       <div
         ref={mapNodeRef}
         className={styles.leafletViewport}
-        style={{ backgroundImage: `url(${BASE_MAP_URL})` }}
         aria-label="Mapa topografico UNIVO"
       />
 

@@ -6,6 +6,8 @@ import styles from './Sidebar.module.css'
 export default function Sidebar({
   activeZone,
   onZoneClick,
+  open,
+  onClose,
   layers,
   onToggleLayer,
   routeFrom,
@@ -27,7 +29,10 @@ export default function Sidebar({
   }, [])
 
   return (
-    <aside className={styles.sidebar}>
+    <aside className={`${styles.sidebar} ${open ? styles.open : ''}`} onClick={e => e.stopPropagation()}>
+      <button className={styles.mobileClose} type="button" onClick={onClose} aria-label="Cerrar menu">
+        Cerrar
+      </button>
       {Object.entries(grouped).map(([cat, zones]) => (
         <div className={styles.section} key={cat}>
           <div className={styles.sectionTitle}>{CAT_LABELS[cat] || cat}</div>

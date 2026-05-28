@@ -31,6 +31,14 @@
   z-index: 30;
 }
 
+.mobileBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  background: rgba(6, 10, 16, 0.38);
+  backdrop-filter: blur(1px);
+}
+
 .mapLoading {
   position: absolute;
   inset: 0;
@@ -136,14 +144,43 @@
 @media (max-width: 768px) {
   .app {
     grid-template-columns: 1fr;
-    grid-template-rows: 56px 1fr 26px;
+    grid-template-rows: auto 1fr 26px;
     grid-template-areas:
       "topbar"
       "map"
       "statusbar";
   }
-  /* Sidebar hides on mobile */
-  .app > aside {
-    display: none;
+
+  .mapWrapper {
+    min-height: 0;
+  }
+
+  .layerPanelAnchor {
+    top: 10px;
+    right: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .app {
+    grid-template-rows: auto 1fr 34px;
+  }
+
+  .mapLoading {
+    padding: 18px;
+  }
+
+  .mapLoadingCard {
+    padding: 20px 18px;
+    border-radius: 18px;
+  }
+
+  .appError {
+    padding: 16px;
+  }
+
+  .appErrorCard {
+    padding: 20px 18px;
+    border-radius: 18px;
   }
 }
