@@ -15,7 +15,7 @@ function getSafeZoom(map, fallback = 0) {
   return Number.isFinite(zoom) ? zoom : fallback
 }
 
-export default function CampusMap({ zones, layers, activeZone, onZoneClick, onToggleLayer = () => {}, route = null }) {
+export default function CampusMap({ zones, layers, activeZone, onZoneClick, onToggleLayer = () => {}, route = null, routeSummary = null }) {
   const mapNodeRef = useRef(null)
   const mapRef = useRef(null)
   const baseLayerRef = useRef(null)
@@ -280,7 +280,35 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       return
     }
 
+    if (routeSummary?.points?.length) {
+      const routeCenter = routeSummary.points.reduce(
+        (acc, point) => [acc[0] + point[0], acc[1] + point[1]],
+        [0, 0]
+      ).map(total => total / routeSummary.points.length)
+
+      map.setView(routeCenter, Math.min(4.5, Math.max(getSafeZoom(map, 2.8), 2.8)), {
+        animate: true,
+      })
+      return
+    }
+
     map.fitBounds(MAP_BOUNDS, { padding: FIT_PADDING, animate: true })
+  }
+
+  const handleFocusRoute = (e) => {
+    e.stopPropagation()
+
+    const map = mapRef.current
+    if (!map || !routeSummary?.points?.length) return
+
+    const routeCenter = routeSummary.points.reduce(
+      (acc, point) => [acc[0] + point[0], acc[1] + point[1]],
+      [0, 0]
+    ).map(total => total / routeSummary.points.length)
+
+    map.setView(routeCenter, Math.min(4.5, Math.max(getSafeZoom(map, 2.8), 2.8)), {
+      animate: true,
+    })
   }
 
   return (
@@ -306,6 +334,35 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       <div className={styles.planBadge}>
         Plano UNIVO actualizado - Leaflet base
       </div>
+
+      {routeSummary && (
+        <div className={styles.navigationCard}>
+          <div className={styles.navigationCardHeader}>
+            <span className={styles.navigationPill}>Modo navegacion</span>
+            <button
+              className={styles.navigationButton}
+              onClick={handleFocusRoute}
+              title="Centrar ruta"
+              aria-label="Centrar ruta"
+            >
+              <Icons.Route />
+            </button>
+          </div>
+          <div className={styles.navigationTitle}>
+            {routeSummary.origin.name} {'\u2192'} {routeSummary.destination.name}
+          </div>
+          <div className={styles.navigationMeta}>
+            <span>{routeSummary.distanceMeters} m aprox.</span>
+            <span>{routeSummary.durationMinutes} min aprox.</span>
+            <span>{routeSummary.stepCount} nodos</span>
+          </div>
+          <div className={styles.navigationNext}>
+            {routeSummary.nextStop
+              ? `Siguiente: ${routeSummary.nextStop.label}`
+              : 'Ruta lista para seguir'}
+          </div>
+        </div>
+      )}
 
       <div className={styles.controls} onClick={e => e.stopPropagation()}>
         <button
@@ -338,7 +395,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
           onClick={handleFocusActive}
           title={activeZone ? `Centrar ${activeZone.name}` : 'Centrar mapa'}
           aria-label="Centrar mapa"
-          disabled={!activeZone}
+          disabled={!activeZone && !routeSummary}
         >
           <Icons.Pin />
         </button>

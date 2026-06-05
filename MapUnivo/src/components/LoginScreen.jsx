@@ -60,7 +60,7 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
             />
           </div>
           <div>
-            <span className={styles.logoName}>UNIVO Maps</span>
+            <span className={styles.logoName}>MapUNIVO</span>
             <span className={styles.logoSub}>Campus Navigator</span>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label className={styles.label}>Usuario UNIVO</label>
+            <label className={styles.label}>Usuario MapUNIVO</label>
             <div className={styles.field}>
               <span className={styles.fieldIcon}><Icons.User /></span>
               <input

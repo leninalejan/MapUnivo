@@ -14,7 +14,7 @@ export default function StatusBar({ activeZone }) {
     <div className={styles.bar}>
       <span>
         <span className={styles.dot} />
-        UNIVO Maps v1.0 - Connected
+        MapUNIVO v1.0 - Connected
       </span>
       <span>Universidad de Oriente - San Miguel, El Salvador</span>
       <span className={styles.coords}>{coords}</span>

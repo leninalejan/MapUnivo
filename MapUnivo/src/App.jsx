@@ -8,14 +8,14 @@ import UserMenu    from './components/UserMenu.jsx'
 import StatusBar   from './components/StatusBar.jsx'
 import Toast       from './components/Toast.jsx'
 import { CAMPUS_ZONES, LAYER_CONFIG } from './data/campusData.js'
-import { buildCampusRoute, findCampusLocation } from './data/campusRoutes.js'
+import { buildCampusRoute, findCampusLocation, getRouteGuide } from './data/campusRoutes.js'
 import styles from './App.module.css'
 
 const CampusMap = lazy(() => import('./components/CampusMap.jsx'))
 
 const DEFAULT_USER = {
   username: 'invitado',
-  name: 'Invitado UNIVO',
+  name: 'Invitado MapUNIVO',
   role: 'Acceso directo al mapa',
   initials: 'IU',
   carnet: 'MAP-000',
@@ -68,7 +68,7 @@ function MapLoadingFallback() {
     <div className={styles.mapLoading}>
       <div className={styles.mapLoadingCard}>
         <div className={styles.mapLoadingSpinner} />
-        <div className={styles.mapLoadingTitle}>Cargando mapa UNIVO</div>
+        <div className={styles.mapLoadingTitle}>Cargando MapUNIVO</div>
         <div className={styles.mapLoadingText}>
           Estamos preparando el plano y las capas del campus...
         </div>
@@ -102,7 +102,7 @@ class AppErrorBoundary extends React.Component {
     return (
       <div className={styles.appError}>
         <div className={styles.appErrorCard}>
-          <div className={styles.appErrorTitle}>No se pudo cargar UNIVO Maps</div>
+          <div className={styles.appErrorTitle}>No se pudo cargar MapUNIVO</div>
           <div className={styles.appErrorText}>
             {this.state.message}
           </div>
@@ -124,11 +124,23 @@ function MainApp({ user, theme, onToggleTheme }) {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showLayers,   setShowLayers]   = useState(false)
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [toast,        setToast]        = useState(null)
   const [routeFrom,    setRouteFrom]    = useState('')
   const [routeTo,      setRouteTo]      = useState('')
   const [routePlan,    setRoutePlan]    = useState(null)
   const [routeError,   setRouteError]   = useState('')
+  const routeSummary = useMemo(() => {
+    if (!routePlan) return null
+
+    const guide = getRouteGuide(routePlan)
+    return {
+      ...routePlan,
+      guide,
+      stepCount: guide.length,
+      nextStop: guide[1] || guide[0] || null,
+    }
+  }, [routePlan])
 
   // Build default layer state from config
   const defaultLayers = useMemo(() => {
@@ -145,6 +157,18 @@ function MainApp({ user, theme, onToggleTheme }) {
     return () => document.removeEventListener('click', h)
   }, [])
 
+  useEffect(() => {
+    const handleViewport = () => {
+      if (window.innerWidth > 768) {
+        setSidebarOpen(false)
+      }
+    }
+
+    handleViewport()
+    window.addEventListener('resize', handleViewport)
+    return () => window.removeEventListener('resize', handleViewport)
+  }, [])
+
   const handleZoneClick = (zone) => {
     setActiveZone(zone)
     setLayers(prev => (prev[zone.cat] ? prev : { ...prev, [zone.cat]: true }))
@@ -154,6 +178,22 @@ function MainApp({ user, theme, onToggleTheme }) {
 
   const handleToggleLayer = (id) => {
     setLayers(prev => ({ ...prev, [id]: !prev[id] }))
+  }
+
+  const toggleSidebar = (event) => {
+    event?.stopPropagation?.()
+
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      setSidebarOpen(prev => !prev)
+      setShowUserMenu(false)
+      setShowLayers(false)
+      return
+    }
+
+    setSidebarCollapsed(prev => !prev)
+    setSidebarOpen(false)
+    setShowUserMenu(false)
+    setShowLayers(false)
   }
 
   const syncRouteLayers = (origin, destination) => {
@@ -230,17 +270,21 @@ function MainApp({ user, theme, onToggleTheme }) {
   }
 
   return (
-    <div className={styles.app} onClick={() => { setShowUserMenu(false); setShowLayers(false); setSidebarOpen(false) }}>
+    <div
+      className={styles.app}
+      style={{ '--sidebar-width': sidebarCollapsed ? '84px' : '290px' }}
+      onClick={() => { setShowUserMenu(false); setShowLayers(false); setSidebarOpen(false) }}
+    >
 
       {/* ── Topbar ── */}
       <Topbar
         user={user}
         onSearch={handleZoneClick}
         layersOpen={showLayers}
-        sidebarOpen={sidebarOpen}
+        sidebarOpen={sidebarOpen || sidebarCollapsed}
         theme={theme}
         onToggleTheme={onToggleTheme}
-        onToggleSidebar={e => { e.stopPropagation(); setSidebarOpen(p => !p); setShowUserMenu(false); setShowLayers(false) }}
+        onToggleSidebar={toggleSidebar}
         onToggleLayers={e => { e.stopPropagation(); setShowLayers(p => !p); setShowUserMenu(false) }}
         onToggleUser={e  => { e.stopPropagation(); setShowUserMenu(p => !p); setShowLayers(false) }}
       />
@@ -251,6 +295,8 @@ function MainApp({ user, theme, onToggleTheme }) {
         onZoneClick={handleZoneClick}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
         layers={layers}
         onToggleLayer={handleToggleLayer}
         routeFrom={routeFrom}
@@ -258,7 +304,7 @@ function MainApp({ user, theme, onToggleTheme }) {
         onRouteFromChange={value => { setRouteFrom(value); setRouteError('') }}
         onRouteToChange={value => { setRouteTo(value); setRouteError('') }}
         onCalculateRoute={handleCalculateRoute}
-        routeSummary={routePlan}
+        routeSummary={routeSummary}
         routeError={routeError}
         onClearRoute={handleClearRoute}
       />
@@ -274,6 +320,7 @@ function MainApp({ user, theme, onToggleTheme }) {
             onZoneClick={handleZoneClick}
             onToggleLayer={handleToggleLayer}
             route={routePlan}
+            routeSummary={routeSummary}
           />
         </Suspense>
 

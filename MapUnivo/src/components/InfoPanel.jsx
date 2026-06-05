@@ -6,7 +6,7 @@ export default function InfoPanel({ zone, onClose, onRouteHere }) {
   const hasPhone = /\d/.test(zone.tel || '')
 
   const handleShare = () => {
-    navigator.clipboard?.writeText(`${zone.name} - MapUnivo, Campus UNIVO`)
+    navigator.clipboard?.writeText(`${zone.name} - MapUNIVO, Campus UNIVO`)
       .then(() => {})
       .catch(() => {})
   }

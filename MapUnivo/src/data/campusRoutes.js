@@ -18,6 +18,20 @@ const ROUTE_HUBS = {
   panamericana_gate: { point: [558, 340] },
 }
 
+const ROUTE_NODE_LABELS = {
+  north_gate: 'Conexión norte',
+  north_connector: 'Tramo norte',
+  north_central: 'Cruce norte central',
+  center_hub: 'Núcleo central',
+  west_hub: 'Enlace oeste',
+  east_hub: 'Enlace este',
+  east_spine: 'Corredor este',
+  north_east_spine: 'Bajada noreste',
+  south_hub: 'Núcleo sur',
+  south_access: 'Acceso sur',
+  panamericana_gate: 'Portón Panamericana',
+}
+
 const HUB_EDGES = [
   ['north_gate', 'north_connector'],
   ['north_connector', 'north_central'],
@@ -212,6 +226,32 @@ export function findCampusLocation(query) {
     .sort((a, b) => b.score - a.score)
 
   return scored[0]?.zone || null
+}
+
+export function getRouteNodeLabel(id) {
+  const zone = CAMPUS_ZONES.find(item => item.id === id)
+  if (zone) return zone.name
+
+  return ROUTE_NODE_LABELS[id] || String(id || '').replaceAll('_', ' ')
+}
+
+export function getRouteGuide(route) {
+  if (!route?.pathIds?.length) return []
+
+  return route.pathIds.map((id, index) => {
+    const zone = CAMPUS_ZONES.find(item => item.id === id)
+
+    return {
+      id,
+      index,
+      label: getRouteNodeLabel(id),
+      tag: zone?.badge || 'NODO',
+      color: zone?.color || '#0F5EA8',
+      isZone: !!zone,
+      isStart: index === 0,
+      isEnd: index === route.pathIds.length - 1,
+    }
+  })
 }
 
 export function buildCampusRoute(origin, destination) {

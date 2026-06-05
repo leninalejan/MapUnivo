@@ -80,7 +80,7 @@ export default function Topbar({ user, onSearch, onToggleLayers, onToggleUser, o
           />
         </div>
         <span className={styles.brandName}>
-          <span>UNIVO</span> Maps
+          <span>Map</span>UNIVO
         </span>
       </div>
 
