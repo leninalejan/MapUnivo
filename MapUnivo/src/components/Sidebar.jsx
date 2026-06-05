@@ -30,6 +30,13 @@ export default function Sidebar({
     return g
   }, [])
 
+  const quickZones = useMemo(() => {
+    const ids = ['entrada_principal', 'bloque_principal', 'administracion', 'area_tres']
+    return ids.map(id => CAMPUS_ZONES.find(zone => zone.id === id)).filter(Boolean)
+  }, [])
+
+  const visibleLayerCount = Object.values(layers).filter(Boolean).length
+
   return (
     <aside className={`${styles.sidebar} ${open ? styles.open : ''} ${collapsed ? styles.collapsed : ''}`} onClick={e => e.stopPropagation()}>
       <div className={styles.sidebarHeader}>
@@ -56,24 +63,74 @@ export default function Sidebar({
 
       {collapsed ? (
         <div className={styles.collapsedDock}>
-          <button type="button" className={styles.dockBtn} onClick={onToggleCollapse} title="Abrir menú completo">
-            <span className={styles.dockBtnIcon}><Icons.Menu /></span>
-            <span className={styles.dockBtnText}>Abrir</span>
-          </button>
-          <button type="button" className={styles.dockBtn} onClick={() => onZoneClick(activeZone || CAMPUS_ZONES[0])} title="Ir a zona destacada">
-            <span className={styles.dockBtnIcon}><Icons.Pin /></span>
-            <span className={styles.dockBtnText}>Zona</span>
-          </button>
-          <button type="button" className={styles.dockBtn} onClick={() => onToggleCollapse()} title="Ver navegación">
-            <span className={styles.dockBtnIcon}><Icons.Route /></span>
-            <span className={styles.dockBtnText}>Ruta</span>
-          </button>
-          <button type="button" className={styles.dockBtn} onClick={() => onToggleCollapse()} title="Mostrar capas">
-            <span className={styles.dockBtnIcon}><Icons.Layers /></span>
-            <span className={styles.dockBtnText}>Capas</span>
-          </button>
+          <div className={styles.collapsedSummary}>
+            <div className={styles.collapsedSummaryTop}>
+              <span className={styles.collapsedBrand}>MapUNIVO</span>
+              <span className={styles.collapsedMode}>Compacto</span>
+            </div>
+
+            <div className={styles.collapsedStats}>
+              <div className={styles.collapsedStat}>
+                <span className={styles.collapsedStatValue}>{visibleLayerCount}</span>
+                <span className={styles.collapsedStatLabel}>Capas</span>
+              </div>
+              <div className={styles.collapsedStat}>
+                <span className={styles.collapsedStatValue}>{routeSummary ? routeSummary.stepCount : 0}</span>
+                <span className={styles.collapsedStatLabel}>Ruta</span>
+              </div>
+            </div>
+
+            <button type="button" className={styles.collapsedPrimary} onClick={onToggleCollapse} title="Abrir panel completo">
+              <Icons.Menu />
+              <span>Abrir panel</span>
+            </button>
+          </div>
+
+          <div className={styles.collapsedQuickLabel}>Acceso rapido</div>
+          <div className={styles.collapsedQuickGrid}>
+            <button
+              type="button"
+              className={styles.dockBtn}
+              onClick={() => onZoneClick(activeZone || CAMPUS_ZONES[0])}
+              title="Ir a la zona activa"
+            >
+              <span className={styles.dockBtnIcon}><Icons.Pin /></span>
+              <span className={styles.dockBtnText}>Activo</span>
+            </button>
+
+            {quickZones.slice(0, 3).map(zone => (
+              <button
+                key={zone.id}
+                type="button"
+                className={styles.dockBtn}
+                onClick={() => onZoneClick(zone)}
+                title={zone.name}
+              >
+                <span className={styles.dockBtnIcon} style={{ color: zone.color }}>{zone.icon}</span>
+                <span className={styles.dockBtnText}>{zone.badge}</span>
+              </button>
+            ))}
+          </div>
+
+          {routeSummary && (
+            <button
+              type="button"
+              className={styles.collapsedRouteCard}
+              onClick={onToggleCollapse}
+              title="Abrir para ver la ruta completa"
+            >
+              <span className={styles.collapsedRouteLabel}>Ruta activa</span>
+              <span className={styles.collapsedRoutePath}>
+                {routeSummary.origin.name}{' \u2192 '}{routeSummary.destination.name}
+              </span>
+              <span className={styles.collapsedRouteMeta}>
+                {routeSummary.durationMinutes} min · {routeSummary.distanceMeters} m
+              </span>
+            </button>
+          )}
+
           <div className={styles.collapsedHint}>
-            Toca para abrir
+            Toca o expande para ver el panel completo
           </div>
         </div>
       ) : (
