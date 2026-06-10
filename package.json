@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Una pagina para orientar a todos los de esta Universidad",
   "main": "index.js",
-  "scripts": {
-    "dev": "vite --config MapUnivo/vite.config.js",
-    "build": "vite --config MapUnivo/vite.config.js build",
-    "preview": "vite --config MapUnivo/vite.config.js preview"
-  },
+"scripts": {
+  "dev": "npx vite --config MapUnivo/vite.config.js",
+  "build": "npx vite build --config MapUnivo/vite.config.js",
+  "preview": "npx vite preview --config MapUnivo/vite.config.js"
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leninalejan/MapUnivo.git"
