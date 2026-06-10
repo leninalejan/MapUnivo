@@ -82,7 +82,7 @@
   .panel {
     left: 10px;
     right: 10px;
-    bottom: 10px;
+    bottom: 92px;
     width: auto;
     max-width: none;
     z-index: 95;
@@ -95,7 +95,7 @@
   .panel {
     left: 8px;
     right: 8px;
-    bottom: 8px;
+    bottom: 92px;
     padding: 16px;
   }
 

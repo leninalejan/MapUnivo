@@ -7,8 +7,16 @@ import { Icons } from './Icons.jsx'
 import styles from './CampusMap.module.css'
 import baseMapUrl from '../assets/base-map.svg'
 
-const FIT_PADDING = [24, 24]
 const BASE_MAP_URL = baseMapUrl
+
+function getFitPadding(map) {
+  const size = map?.getSize?.()
+  if (!size?.x || !size?.y) return [16, 16]
+
+  const shortestSide = Math.min(size.x, size.y)
+  const padding = Math.max(10, Math.min(28, Math.round(shortestSide * 0.04)))
+  return [padding, padding]
+}
 
 function getSafeZoom(map, fallback = 0) {
   const zoom = map?.getZoom?.()
@@ -110,7 +118,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       }
 
       try {
-        map.fitBounds(MAP_BOUNDS, { padding: FIT_PADDING, animate: false })
+        map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: false })
       } catch {
         map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], 0, { animate: false })
       }
@@ -119,6 +127,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
     const rafId = window.requestAnimationFrame(fitCampus)
     const handleResize = () => {
       map.invalidateSize()
+      window.requestAnimationFrame(fitCampus)
     }
 
     window.addEventListener('resize', handleResize)
@@ -187,7 +196,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
     if (!route?.points?.length) {
       if (!activeZone) {
         try {
-          map.fitBounds(MAP_BOUNDS, { padding: FIT_PADDING, animate: false })
+          map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: false })
         } catch {
           map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], -0.25, { animate: false })
         }
@@ -264,7 +273,10 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
 
   const handleReset = (e) => {
     e.stopPropagation()
-    mapRef.current?.fitBounds(MAP_BOUNDS, { padding: FIT_PADDING, animate: true })
+    const map = mapRef.current
+    if (!map) return
+
+    map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: true })
   }
 
   const handleFocusActive = (e) => {
@@ -292,7 +304,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       return
     }
 
-    map.fitBounds(MAP_BOUNDS, { padding: FIT_PADDING, animate: true })
+    map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: true })
   }
 
   const handleFocusRoute = (e) => {
