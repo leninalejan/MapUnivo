@@ -102,7 +102,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
   const mapNodeRef = useRef(null)
   const mapRef = useRef(null)
   const baseLayerRef = useRef(null)
-  const baseLayerTokenRef = useRef(0)
+  const mapModeRef = useRef(mapMode)
   const markerRefs = useRef({})
   const routeLayerRef = useRef(null)
   const onZoneClickRef = useRef(onZoneClick)
@@ -113,54 +113,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
   }, [onZoneClick])
 
   useEffect(() => {
-    const map = mapRef.current
-    if (!map) return
-
-    const token = ++baseLayerTokenRef.current
-    baseLayerRef.current?.remove()
-    baseLayerRef.current = null
-    setBaseReady(false)
-
-    const baseLayer = L.imageOverlay(getBaseMapUrl(mapMode, theme), MAP_BOUNDS, {
-      pane: 'campus-base',
-      interactive: false,
-    })
-
-    const applyBaseStyle = () => {
-      const element = baseLayer.getElement?.()
-      if (!element) return
-
-      element.style.transition = 'filter 180ms ease, opacity 180ms ease'
-
-      if (mapMode === 'satellite') {
-        element.style.filter = 'saturate(1.15) contrast(1.08) brightness(0.92) hue-rotate(-8deg)'
-      } else {
-        element.style.filter = 'none'
-      }
-    }
-
-    const markReady = () => {
-      if (baseLayerTokenRef.current !== token) return
-      setBaseReady(true)
-      applyBaseStyle()
-    }
-
-    baseLayer.on('load', markReady)
-    baseLayer.on('error', markReady)
-    baseLayer.addTo(map)
-    baseLayerRef.current = baseLayer
-
-    const timer = window.setTimeout(markReady, 120)
-
-    return () => {
-      window.clearTimeout(timer)
-      baseLayer.off('load', markReady)
-      baseLayer.off('error', markReady)
-      if (baseLayerTokenRef.current === token && baseLayerRef.current === baseLayer) {
-        baseLayerRef.current?.remove()
-        baseLayerRef.current = null
-      }
-    }
+    mapModeRef.current = mapMode
   }, [mapMode, theme])
 
   useEffect(() => {
@@ -198,19 +151,23 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
     })
     baseLayerRef.current = baseLayer
 
+    const applyBaseStyle = () => {
+      const element = baseLayer.getElement?.()
+      if (!element) return
+
+      element.style.transition = 'filter 180ms ease, opacity 180ms ease'
+      if (mapModeRef.current === 'satellite') {
+        element.style.filter = 'saturate(1.15) contrast(1.08) brightness(0.92) hue-rotate(-8deg)'
+      } else {
+        element.style.filter = 'none'
+      }
+    }
+
     const markReady = () => {
       if (!alive) return
       if (baseLayerRef.current !== baseLayer) return
       setBaseReady(true)
-      const element = baseLayer.getElement?.()
-      if (element) {
-        element.style.transition = 'filter 180ms ease, opacity 180ms ease'
-        if (mapMode === 'satellite') {
-          element.style.filter = 'saturate(1.15) contrast(1.08) brightness(0.92) hue-rotate(-8deg)'
-        } else {
-          element.style.filter = 'none'
-        }
-      }
+      applyBaseStyle()
     }
 
     baseLayer.on('load', markReady)
@@ -223,7 +180,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       const marker = L.marker(pointFromZone(zone), {
         pane: 'campus-markers',
         icon: makeZoneMarker(zone),
-        keyboard: false,
+        keyboard: true,
         interactive: true,
         riseOnHover: true,
       })
@@ -251,6 +208,11 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         if (!el) return
         L.DomEvent.disableClickPropagation(el)
         L.DomEvent.disableScrollPropagation(el)
+        el.setAttribute('role', 'button')
+        el.setAttribute('tabindex', '0')
+        el.setAttribute('aria-label', zone.name)
+        el.setAttribute('title', zone.name)
+        el.style.cursor = 'pointer'
 
         let lastTouchAt = 0
         const handleClick = (event) => {
@@ -263,12 +225,20 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
           openZone(event)
         }
 
+        const handleKeyDown = (event) => {
+          if (event.key !== 'Enter' && event.key !== ' ') return
+          event.preventDefault()
+          openZone(event)
+        }
+
         el.addEventListener('click', handleClick)
         el.addEventListener('touchend', handleTouchEnd, { passive: false })
+        el.addEventListener('keydown', handleKeyDown)
 
         marker.once('remove', () => {
           el.removeEventListener('click', handleClick)
           el.removeEventListener('touchend', handleTouchEnd)
+          el.removeEventListener('keydown', handleKeyDown)
         })
       })
 
@@ -314,6 +284,14 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       mapRef.current = null
     }
   }, [zones])
+
+  useEffect(() => {
+    const baseLayer = baseLayerRef.current
+    if (!baseLayer) return
+
+    const nextUrl = getBaseMapUrl(mapMode, theme)
+    baseLayer.setUrl(nextUrl)
+  }, [mapMode, theme])
 
   useEffect(() => {
     const map = mapRef.current

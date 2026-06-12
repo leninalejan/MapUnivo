@@ -9,13 +9,7 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.08), transparent 26%),
-    radial-gradient(circle at 80% 18%, rgba(45,138,87,0.18), transparent 30%),
-    radial-gradient(circle at 22% 82%, rgba(15,94,168,0.12), transparent 28%),
-    linear-gradient(135deg, #0b1320 0%, #111c2a 52%, #0f1c1b 100%);
-  perspective: 1800px;
-  perspective-origin: 50% 46%;
+  background: #dfe8ee;
 }
 
 .mapArea::before {
@@ -24,73 +18,20 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%),
-    radial-gradient(circle at center, transparent 52%, rgba(7, 11, 18, 0.20) 100%);
-}
-
-.mapArea::after {
-  content: '';
-  position: absolute;
-  inset: 18px;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: 28px;
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.05), transparent 28%),
-    linear-gradient(225deg, rgba(0,0,0,0.18), transparent 32%);
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent 18%);
 }
 
 .leafletViewport {
   position: absolute;
   inset: 0;
   z-index: 3;
-  background-color: #f4f1e7;
+  background-color: #dfe8ee;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
-  transform-origin: center center;
-  transform: translateZ(0) scale(1.015);
-  transition: transform 240ms ease, filter 240ms ease, box-shadow 240ms ease;
-  box-shadow:
-    0 24px 64px rgba(0, 0, 0, 0.28),
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-}
-
-.leafletViewport::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 50% 48%, transparent 58%, rgba(5, 8, 13, 0.10) 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 16%);
-}
-
-:global(html[data-theme='dark']) .leafletViewport {
-  transform: perspective(1800px) rotateX(3.2deg) rotateY(-4.8deg) translateY(2px) scale(1.025);
-  filter: saturate(1.04) contrast(1.03);
-}
-
-:global(html[data-theme='light']) .leafletViewport {
-  transform: perspective(1800px) rotateX(2.1deg) rotateY(-3.4deg) translateY(1px) scale(1.02);
-  filter: saturate(1.01) contrast(1.01);
-}
-
-:global(html[data-theme='dark']) .leafletViewport::before {
-  background:
-    radial-gradient(circle at 50% 48%, transparent 58%, rgba(5, 8, 13, 0.14) 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 16%);
-}
-
-:global(html[data-theme='light']) .leafletViewport::before {
-  background:
-    radial-gradient(circle at 50% 48%, transparent 60%, rgba(5, 8, 13, 0.08) 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 16%);
+  background-size: cover;
+  transform: none;
+  transition: filter 180ms ease, opacity 180ms ease;
+  box-shadow: none;
 }
 
 .mapOverlayLoading {
@@ -243,9 +184,9 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(20, 28, 40, 0.08);
-  color: var(--text);
+  background: linear-gradient(135deg, rgba(15, 94, 168, 0.14), rgba(242, 181, 68, 0.16));
+  border: 1px solid rgba(15, 94, 168, 0.16);
+  color: var(--accent);
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
   transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease;
 }
@@ -268,9 +209,9 @@
   height: 32px;
   padding: 0 10px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(20, 28, 40, 0.08);
-  color: var(--text);
+  background: linear-gradient(135deg, rgba(242, 181, 68, 0.18), rgba(255, 255, 255, 0.72));
+  border: 1px solid rgba(242, 181, 68, 0.26);
+  color: #9a4d00;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -286,8 +227,8 @@
 
 .navigationCancel:hover {
   transform: translateY(-1px);
-  color: #b45309;
-  border-color: rgba(242, 181, 68, 0.34);
+  color: #8a4200;
+  border-color: rgba(242, 181, 68, 0.42);
   box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
 }
 
@@ -456,6 +397,14 @@
 
 :global(.leaflet-container).modeSatellite {
   background: #09111b;
+}
+
+:global(html[data-theme='light']) .modeSatellite {
+  background-color: #e9f0f5;
+}
+
+:global(html[data-theme='light']) .leafletViewport.modeSatellite {
+  background-color: #e9f0f5;
 }
 
 :global(.leaflet-container).modeRelief {
@@ -789,17 +738,7 @@
 }
 
 :global(html[data-theme='light']) .mapArea {
-  background:
-    radial-gradient(circle at 18% 18%, rgba(255,255,255,0.54), transparent 26%),
-    radial-gradient(circle at 80% 18%, rgba(45,138,87,0.13), transparent 30%),
-    radial-gradient(circle at 22% 82%, rgba(15,94,168,0.10), transparent 28%),
-    linear-gradient(135deg, #eef4fb 0%, #dce7f2 54%, #cfd9df 100%);
-}
-
-:global(html[data-theme='light']) .mapArea::after {
-  box-shadow:
-    0 24px 54px rgba(15, 94, 168, 0.10),
-    0 0 0 1px rgba(15, 94, 168, 0.08) inset;
+  background: #e9f0f5;
 }
 
 :global(html[data-theme='light']) .planBadge,
@@ -821,19 +760,37 @@
 
 :global(html[data-theme='light']) .ctrlBtn,
 :global(html[data-theme='light']) .navigationButton {
-  background: rgba(255, 255, 255, 0.96);
-  border-color: rgba(15, 94, 168, 0.10);
+  background: linear-gradient(135deg, rgba(15, 94, 168, 0.10), rgba(255, 255, 255, 0.92));
+  border-color: rgba(15, 94, 168, 0.14);
+  color: var(--accent);
 }
 
 :global(html[data-theme='light']) .navigationCancel {
-  background: rgba(255, 255, 255, 0.96);
-  border-color: rgba(15, 94, 168, 0.10);
-  color: var(--text);
+  background: linear-gradient(135deg, rgba(242, 181, 68, 0.16), rgba(255, 255, 255, 0.96));
+  border-color: rgba(242, 181, 68, 0.28);
+  color: #9a4d00;
 }
 
 :global(html[data-theme='light']) .navigationCancel:hover {
   border-color: rgba(15, 94, 168, 0.24);
   color: var(--accent);
+}
+
+:global(html[data-theme='dark']) .navigationButton {
+  background: linear-gradient(135deg, rgba(15, 94, 168, 0.26), rgba(242, 181, 68, 0.14));
+  border-color: rgba(255, 255, 255, 0.10);
+  color: #f4f8ff;
+}
+
+:global(html[data-theme='dark']) .navigationCancel {
+  background: linear-gradient(135deg, rgba(242, 181, 68, 0.20), rgba(15, 23, 42, 0.90));
+  border-color: rgba(242, 181, 68, 0.28);
+  color: #ffd67a;
+}
+
+:global(html[data-theme='dark']) .navigationCancel:hover {
+  color: #ffe7b0;
+  border-color: rgba(242, 181, 68, 0.42);
 }
 
 :global(html[data-theme='light']) .navigationTitle,

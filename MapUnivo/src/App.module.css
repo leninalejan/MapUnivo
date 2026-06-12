@@ -25,6 +25,13 @@
     linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
 }
 
+:global(html[data-theme='light']) .mapWrapper {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.58), transparent 26%),
+    radial-gradient(circle at 80% 30%, rgba(45, 138, 87, 0.10), transparent 30%),
+    linear-gradient(135deg, #f4f8fb 0%, #e2ecf3 54%, #d8e3eb 100%);
+}
+
 .layerPanelAnchor {
   position: absolute;
   top: 14px;
@@ -47,6 +54,10 @@
   backdrop-filter: blur(1px);
 }
 
+:global(html[data-theme='light']) .mobileBackdrop {
+  background: rgba(255, 255, 255, 0.28);
+}
+
 .mapLoading {
   position: absolute;
   inset: 0;
@@ -59,6 +70,13 @@
     radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.08), transparent 24%),
     radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.12), transparent 28%),
     linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
+}
+
+:global(html[data-theme='light']) .mapLoading {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.54), transparent 24%),
+    radial-gradient(circle at 80% 30%, rgba(45, 138, 87, 0.10), transparent 28%),
+    linear-gradient(135deg, #f4f8fb 0%, #e2ecf3 54%, #d8e3eb 100%);
 }
 
 .mapLoadingCard {
@@ -106,6 +124,13 @@
     radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.12), transparent 24%),
     radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.12), transparent 28%),
     linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
+}
+
+:global(html[data-theme='light']) .appError {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.58), transparent 24%),
+    radial-gradient(circle at 80% 30%, rgba(45, 138, 87, 0.10), transparent 28%),
+    linear-gradient(135deg, #f4f8fb 0%, #e2ecf3 54%, #d8e3eb 100%);
 }
 
 .appErrorCard {
