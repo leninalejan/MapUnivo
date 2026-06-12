@@ -304,18 +304,24 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       const visible = !!layers[zone.cat]
       const isActive = activeZone?.id === zone.id
 
-      if (visible) {
-        if (!map.hasLayer(marker)) {
-          marker.addTo(map)
-        }
+      if (!map.hasLayer(marker)) {
+        marker.addTo(map)
+      }
 
-        if (isActive) {
-          marker.setZIndexOffset(1000)
-        } else {
-          marker.setZIndexOffset(0)
-        }
-      } else if (map.hasLayer(marker)) {
-        marker.remove()
+      marker.setOpacity(visible ? 1 : 0.38)
+
+      const el = marker.getElement?.()
+      if (el) {
+        el.style.filter = visible ? 'none' : 'grayscale(0.2) saturate(0.75)'
+        el.style.transition = 'opacity 180ms ease, filter 180ms ease, transform 180ms ease'
+      }
+
+      if (isActive) {
+        marker.setZIndexOffset(1000)
+      } else if (visible) {
+        marker.setZIndexOffset(0)
+      } else {
+        marker.setZIndexOffset(-150)
       }
     })
   }, [zones, layers, activeZone, route])

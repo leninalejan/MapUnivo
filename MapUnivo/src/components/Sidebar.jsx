@@ -35,6 +35,10 @@ export default function Sidebar({
     return ids.map(id => CAMPUS_ZONES.find(zone => zone.id === id)).filter(Boolean)
   }, [])
 
+  const parkingZones = useMemo(() => {
+    return (grouped.estacionamiento || []).slice()
+  }, [grouped])
+
   const visibleLayerCount = Object.values(layers).filter(Boolean).length
 
   return (
@@ -98,7 +102,7 @@ export default function Sidebar({
               <span className={styles.dockBtnText}>Activo</span>
             </button>
 
-            {quickZones.slice(0, 3).map(zone => (
+            {parkingZones.slice(0, 3).map(zone => (
               <button
                 key={zone.id}
                 type="button"
@@ -107,7 +111,7 @@ export default function Sidebar({
                 title={zone.name}
               >
                 <span className={styles.dockBtnIcon} style={{ color: zone.color }}>{zone.icon}</span>
-                <span className={styles.dockBtnText}>{zone.badge}</span>
+                <span className={styles.dockBtnText}>{zone.name}</span>
               </button>
             ))}
           </div>
@@ -133,8 +137,30 @@ export default function Sidebar({
             Toca o expande para ver el panel completo
           </div>
         </div>
-      ) : (
+          ) : (
         <>
+          {parkingZones.length > 0 && (
+            <div className={styles.section}>
+              <div className={styles.sectionTitle}>Parqueos directos</div>
+              <div className={styles.zoneList}>
+                {parkingZones.map(z => (
+                  <button
+                    key={z.id}
+                    type="button"
+                    className={`${styles.zoneItem} ${activeZone?.id === z.id ? styles.active : ''}`}
+                    onClick={() => onZoneClick(z)}
+                    title={z.name}
+                  >
+                    <div className={styles.zoneIcon}>{z.icon}</div>
+                    <div className={styles.zoneDot} style={{ background: z.color }} />
+                    <span className={styles.zoneName}>{z.name}</span>
+                    <span className={styles.zoneBadge}>{z.badge}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {Object.entries(grouped).map(([cat, zones]) => (
             <div className={styles.section} key={cat}>
               <div className={styles.sectionTitle}>{CAT_LABELS[cat] || cat}</div>

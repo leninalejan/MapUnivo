@@ -253,11 +253,8 @@ export function buildCampusRoute(origin, destination) {
   if (!origin || !destination) return null
   if (origin.id === destination.id) return null
 
-  const nodes = buildGraph(origin, destination)
-  const pathIds = shortestPath(nodes, origin.id, destination.id)
-  if (!pathIds) return null
-
-  const points = pathIds.map(id => nodes[id].point)
+  const points = [pointFromZone(origin), pointFromZone(destination)]
+  const pathIds = [origin.id, destination.id]
   const { distanceMeters, durationMinutes } = estimateRouteStats(points)
 
   return {

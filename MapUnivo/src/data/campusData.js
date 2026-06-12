@@ -73,7 +73,7 @@ export const CAMPUS_ZONES = [
   },
   {
     id: 'estacionamiento_oeste',
-    name: 'Parqueo',
+    name: 'Parqueo Oeste',
     badge: 'PARQUEO',
     cat: 'estacionamiento',
     icon: '🅿️',
@@ -81,7 +81,7 @@ export const CAMPUS_ZONES = [
     color: '#4C6A88',
     px: 18.0,
     py: 44.5,
-    desc: 'Area de parqueo principal frente al bloque central.',
+    desc: 'Area de parqueo principal al oeste del bloque central.',
     horario: 'Lun-Vie: 6:30-18:30',
     tel: '---',
   },
