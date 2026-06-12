@@ -14,6 +14,8 @@
     radial-gradient(circle at 80% 18%, rgba(45,138,87,0.18), transparent 30%),
     radial-gradient(circle at 22% 82%, rgba(15,94,168,0.12), transparent 28%),
     linear-gradient(135deg, #0b1320 0%, #111c2a 52%, #0f1c1b 100%);
+  perspective: 1800px;
+  perspective-origin: 50% 46%;
 }
 
 .mapArea::before {
@@ -24,7 +26,22 @@
   pointer-events: none;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.02), transparent 22%),
-    radial-gradient(circle at center, transparent 54%, rgba(7, 11, 18, 0.18) 100%);
+    radial-gradient(circle at center, transparent 52%, rgba(7, 11, 18, 0.20) 100%);
+}
+
+.mapArea::after {
+  content: '';
+  position: absolute;
+  inset: 18px;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.05), transparent 28%),
+    linear-gradient(225deg, rgba(0,0,0,0.18), transparent 32%);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
 }
 
 .leafletViewport {
@@ -35,6 +52,45 @@
   background-repeat: no-repeat;
   background-position: center center;
   background-size: contain;
+  transform-origin: center center;
+  transform: translateZ(0) scale(1.015);
+  transition: transform 240ms ease, filter 240ms ease, box-shadow 240ms ease;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+}
+
+.leafletViewport::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%, transparent 58%, rgba(5, 8, 13, 0.10) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 16%);
+}
+
+:global(html[data-theme='dark']) .leafletViewport {
+  transform: perspective(1800px) rotateX(3.2deg) rotateY(-4.8deg) translateY(2px) scale(1.025);
+  filter: saturate(1.04) contrast(1.03);
+}
+
+:global(html[data-theme='light']) .leafletViewport {
+  transform: perspective(1800px) rotateX(2.1deg) rotateY(-3.4deg) translateY(1px) scale(1.02);
+  filter: saturate(1.01) contrast(1.01);
+}
+
+:global(html[data-theme='dark']) .leafletViewport::before {
+  background:
+    radial-gradient(circle at 50% 48%, transparent 58%, rgba(5, 8, 13, 0.14) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 16%);
+}
+
+:global(html[data-theme='light']) .leafletViewport::before {
+  background:
+    radial-gradient(circle at 50% 48%, transparent 60%, rgba(5, 8, 13, 0.08) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 16%);
 }
 
 .mapOverlayLoading {
@@ -160,6 +216,13 @@
   gap: 10px;
 }
 
+.navigationActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
 .navigationPill {
   display: inline-flex;
   align-items: center;
@@ -195,6 +258,36 @@
 .navigationButton:hover {
   transform: translateY(-1px);
   color: var(--accent2);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
+}
+
+.navigationCancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(20, 28, 40, 0.08);
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+.navigationCancel svg {
+  width: 14px;
+  height: 14px;
+}
+
+.navigationCancel:hover {
+  transform: translateY(-1px);
+  color: #b45309;
+  border-color: rgba(242, 181, 68, 0.34);
   box-shadow: 0 10px 22px rgba(15, 23, 42, 0.16);
 }
 
@@ -288,6 +381,153 @@
   height: 1px;
   margin: 2px 0;
   background: rgba(255, 255, 255, 0.14);
+}
+
+.modeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modeBtn {
+  min-width: 52px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(244, 248, 255, 0.78);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.modeBtn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(242, 181, 68, 0.28);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.modeBtnActive {
+  border-color: rgba(242, 181, 68, 0.42);
+  background: linear-gradient(135deg, rgba(15, 94, 168, 0.98), rgba(242, 181, 68, 0.92));
+  color: #07131f;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.20);
+}
+
+.modeStandard {
+  background-color: #f4f1e7;
+}
+
+.modeStandardDark {
+  background-color: #0b1320;
+}
+
+.modeStandardLight {
+  background-color: #f4f1e7;
+}
+
+.modeSatellite {
+  background-color: #0b1320;
+}
+
+.modeRelief {
+  background-color: #f0eadc;
+}
+
+.modeSatellite::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.01), transparent 20%),
+    radial-gradient(circle at 25% 20%, rgba(46, 171, 94, 0.10), transparent 18%),
+    radial-gradient(circle at 78% 28%, rgba(242, 181, 68, 0.14), transparent 22%),
+    radial-gradient(circle at center, transparent 54%, rgba(3, 7, 12, 0.18) 100%);
+}
+
+.modeRelief::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 22%),
+    radial-gradient(circle at 30% 20%, rgba(242, 181, 68, 0.10), transparent 20%),
+    radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.10), transparent 22%),
+    radial-gradient(circle at center, transparent 54%, rgba(7, 11, 18, 0.12) 100%);
+}
+
+:global(.leaflet-container).modeSatellite {
+  background: #09111b;
+}
+
+:global(.leaflet-container).modeRelief {
+  background: #f4f1e7;
+}
+
+:global(html[data-theme='light']) .modeBtn {
+  border-color: rgba(15, 94, 168, 0.10);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--text);
+}
+
+:global(html[data-theme='light']) .modeBtn:hover {
+  border-color: rgba(15, 94, 168, 0.22);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--accent);
+}
+
+:global(html[data-theme='light']) .modeBtnActive {
+  color: #07131f;
+}
+
+:global(html[data-theme='light']) .modeSatellite::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.14), transparent 20%),
+    radial-gradient(circle at 25% 20%, rgba(46, 171, 94, 0.12), transparent 18%),
+    radial-gradient(circle at 78% 28%, rgba(242, 181, 68, 0.12), transparent 22%),
+    radial-gradient(circle at center, transparent 54%, rgba(3, 7, 12, 0.08) 100%);
+}
+
+:global(html[data-theme='light']) .modeRelief::before {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.18), transparent 22%),
+    radial-gradient(circle at 30% 20%, rgba(242, 181, 68, 0.10), transparent 20%),
+    radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.08), transparent 22%),
+    radial-gradient(circle at center, transparent 54%, rgba(7, 11, 18, 0.06) 100%);
+}
+
+:global(html[data-theme='dark']) .controls {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent),
+    rgba(8, 14, 22, 0.84);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+
+:global(html[data-theme='dark']) .ctrlBtn {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.04)),
+    rgba(14, 22, 34, 0.96);
+  border-color: rgba(255, 255, 255, 0.10);
+  color: #f4f8ff;
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.20),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+}
+
+:global(html[data-theme='dark']) .ctrlBtn:hover {
+  border-color: rgba(242, 181, 68, 0.32);
+  color: var(--accent2);
+  background:
+    linear-gradient(180deg, rgba(242, 181, 68, 0.12), rgba(255, 255, 255, 0.05)),
+    rgba(14, 22, 34, 0.98);
+  box-shadow:
+    0 10px 22px rgba(0, 0, 0, 0.24),
+    0 0 0 1px rgba(242, 181, 68, 0.08) inset;
+}
+
+:global(html[data-theme='dark']) .ctrlDivider {
+  background: rgba(255, 255, 255, 0.10);
 }
 
 .legendBar {
@@ -418,12 +658,148 @@
   pointer-events: none;
 }
 
+.zoneMarkerRoot {
+  background: transparent;
+  border: 0;
+  pointer-events: auto;
+}
+
+.zoneMarker {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.02)),
+    var(--zone-color);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.markerEdificios {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, #2b6cb0, #0f5ea8);
+}
+
+.markerServicios {
+  width: 34px;
+  height: 28px;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.03)),
+    linear-gradient(135deg, #28a56a, #1c9c72);
+}
+
+.markerAreas {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.30), transparent 38%),
+    linear-gradient(135deg, #42c36d, #2eab5e);
+}
+
+.markerEstacionamiento {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, #6d88a8, #4c6a88);
+}
+
+.markerAccesos {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.02)),
+    linear-gradient(135deg, #f6c75c, #f2b544);
+}
+
+.zoneMarkerGlyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transform: translateY(-0.5px);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.18));
+  color: #f7fbff;
+}
+
+.zoneMarkerGlyph svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.markerAccesos .zoneMarkerGlyph,
+.markerServicios .zoneMarkerGlyph,
+.markerEdificios .zoneMarkerGlyph,
+.markerEstacionamiento .zoneMarkerGlyph,
+.markerAreas .zoneMarkerGlyph {
+  color: #f7fbff;
+}
+
+:global(html[data-theme='light']) .zoneMarker {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.12)),
+    var(--zone-color);
+  border-color: rgba(15, 94, 168, 0.18);
+}
+
+:global(html[data-theme='light']) .markerEdificios {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.10)),
+    linear-gradient(135deg, #4e86be, #0f5ea8);
+}
+
+:global(html[data-theme='light']) .markerServicios {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.40), rgba(255, 255, 255, 0.10)),
+    linear-gradient(135deg, #39b67d, #1c9c72);
+}
+
+:global(html[data-theme='light']) .markerAreas {
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.35), transparent 38%),
+    linear-gradient(135deg, #63d47f, #2eab5e);
+}
+
+:global(html[data-theme='light']) .markerEstacionamiento {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.36), rgba(255, 255, 255, 0.10)),
+    linear-gradient(135deg, #7f99b5, #4c6a88);
+}
+
+:global(html[data-theme='light']) .markerAccesos {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.10)),
+    linear-gradient(135deg, #f8d26f, #f2b544);
+}
+
 :global(html[data-theme='light']) .mapArea {
   background:
     radial-gradient(circle at 18% 18%, rgba(255,255,255,0.54), transparent 26%),
     radial-gradient(circle at 80% 18%, rgba(45,138,87,0.13), transparent 30%),
     radial-gradient(circle at 22% 82%, rgba(15,94,168,0.10), transparent 28%),
     linear-gradient(135deg, #eef4fb 0%, #dce7f2 54%, #cfd9df 100%);
+}
+
+:global(html[data-theme='light']) .mapArea::after {
+  box-shadow:
+    0 24px 54px rgba(15, 94, 168, 0.10),
+    0 0 0 1px rgba(15, 94, 168, 0.08) inset;
 }
 
 :global(html[data-theme='light']) .planBadge,
@@ -447,6 +823,17 @@
 :global(html[data-theme='light']) .navigationButton {
   background: rgba(255, 255, 255, 0.96);
   border-color: rgba(15, 94, 168, 0.10);
+}
+
+:global(html[data-theme='light']) .navigationCancel {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(15, 94, 168, 0.10);
+  color: var(--text);
+}
+
+:global(html[data-theme='light']) .navigationCancel:hover {
+  border-color: rgba(15, 94, 168, 0.24);
+  color: var(--accent);
 }
 
 :global(html[data-theme='light']) .navigationTitle,
@@ -520,6 +907,22 @@
     max-width: none;
   }
 
+  .navigationCardHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .navigationActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .navigationCancel {
+    height: 30px;
+    padding: 0 9px;
+    font-size: 9px;
+  }
+
   .controls {
     top: 62px;
     right: 10px;
@@ -541,6 +944,19 @@
     width: 1px;
     height: 22px;
     margin: 0 2px;
+  }
+
+  .modeGroup {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .modeBtn {
+    min-width: 46px;
+    height: 28px;
+    padding: 0 8px;
+    font-size: 8.5px;
   }
 
   .legendBar {
@@ -587,6 +1003,10 @@
     right: 8px;
     top: 58px;
     padding: 5px;
+    gap: 3px;
+  }
+
+  .modeGroup {
     gap: 3px;
   }
 

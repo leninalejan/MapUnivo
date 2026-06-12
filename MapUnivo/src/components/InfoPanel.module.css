@@ -1,80 +1,196 @@
 /* src/components/InfoPanel.module.css */
 .panel {
-  position: absolute; left: 14px; bottom: 14px;
-  width: 296px;
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  width: 288px;
+  padding: 18px;
+  z-index: 20;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.02), transparent),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
     var(--surface);
   border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.03) inset;
-  padding: 20px; z-index: 20;
+  border-radius: 22px;
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  backdrop-filter: blur(14px);
 }
+
 .close {
-  position: absolute; top: 12px; right: 12px;
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--surface2); color: var(--muted);
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--surface2);
+  color: var(--muted);
   font-size: 17px;
-  display: flex; align-items: center; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid transparent;
-  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
+
 .close:hover {
-  background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.03));
   color: var(--text);
   border-color: var(--border);
   transform: translateY(-1px);
 }
 
 .badge {
-  display: inline-block;
-  font-size: 9px; font-family: var(--mono); font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase;
-  padding: 3px 8px; border-radius: 4px; margin-bottom: 10px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 9px;
+  font-family: var(--mono);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  margin-bottom: 10px;
 }
-.title { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
-.desc  { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-bottom: 14px; }
 
-.meta { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+.title {
+  font-size: 17px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.quickNote {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border-radius: 16px;
+  background: rgba(15, 94, 168, 0.08);
+  border: 1px solid rgba(15, 94, 168, 0.14);
+}
+
+.quickNoteLabel {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.quickNoteText {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 16px;
+}
+
 .metaRow {
-  display:flex; align-items:center; gap:8px;
-  font-size: 12px; color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
 }
-.metaRow strong { color: var(--text); font-weight: 500; }
-.metaIcon { display:flex; width:13px; height:13px; flex-shrink:0; }
-.metaIcon svg { width:100%; height:100%; }
 
-.actions { display:flex; gap:8px; }
+.metaRow strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.metaIcon {
+  display: flex;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.metaIcon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
 .btn {
-  flex:1; height:36px; border-radius:var(--radius-sm);
-  display:flex; align-items:center; justify-content:center; gap:6px;
-  font-size:12.5px; font-weight:700;
+  flex: 1;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
   border: 1px solid transparent;
   box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    background 0.18s ease;
 }
-.btnIco { display:flex; width:13px; height:13px; }
-.btnIco svg { width:100%; height:100%; }
+
+.btnIco {
+  display: flex;
+  width: 13px;
+  height: 13px;
+}
+
+.btnIco svg {
+  width: 100%;
+  height: 100%;
+}
+
 .primary {
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#000;
+  background: linear-gradient(135deg, rgba(15, 94, 168, 0.98), rgba(242, 181, 68, 0.92));
+  color: #07131f;
 }
+
 .primary:hover {
-  transform:translateY(-1px);
-  box-shadow:0 10px 22px rgba(15,94,168,.22);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(15, 94, 168, 0.20);
 }
+
 .secondary {
-  background:var(--surface2); border:1px solid var(--border2); color:var(--text);
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text);
 }
+
 .secondary:hover {
-  border-color:var(--accent2);
-  color:var(--accent2);
-  box-shadow:0 10px 20px rgba(15, 23, 42, 0.08);
+  border-color: var(--accent2);
+  color: var(--accent2);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
 }
 
 :global(html[data-theme='light']) .panel {
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.68), rgba(255,255,255,0.92)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.94)),
     var(--surface);
 }
 
@@ -82,12 +198,14 @@
   .panel {
     left: 10px;
     right: 10px;
-    bottom: 92px;
+    bottom: 82px;
     width: auto;
     max-width: none;
     z-index: 95;
-    padding: 18px;
+    padding: 16px;
     border-radius: 18px;
+    max-height: min(42vh, 320px);
+    overflow: auto;
   }
 }
 
@@ -95,8 +213,9 @@
   .panel {
     left: 8px;
     right: 8px;
-    bottom: 92px;
+    bottom: 76px;
     padding: 16px;
+    max-height: min(48vh, 340px);
   }
 
   .actions {

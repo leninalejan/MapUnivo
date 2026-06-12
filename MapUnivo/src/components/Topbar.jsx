@@ -59,7 +59,7 @@ function SearchBar({ onSelect }) {
   )
 }
 
-export default function Topbar({ user, onSearch, onToggleLayers, onToggleUser, onToggleSidebar, sidebarOpen, layersOpen, theme, onToggleTheme }) {
+export default function Topbar({ user, onSearch, onToggleLayers, onToggleMapModes, onToggleUser, onToggleSidebar, sidebarOpen, layersOpen, mapModesOpen, theme, onToggleTheme }) {
   return (
     <header className={styles.topbar}>
       <button
@@ -102,8 +102,18 @@ export default function Topbar({ user, onSearch, onToggleLayers, onToggleUser, o
           className={`${styles.iconBtn} ${layersOpen ? styles.active : ''}`}
           onClick={onToggleLayers}
           title="Capas del mapa"
+          aria-label="Capas del mapa"
         >
           <Icons.Layers />
+        </button>
+
+        <button
+          className={`${styles.iconBtn} ${mapModesOpen ? styles.active : ''}`}
+          onClick={onToggleMapModes}
+          title="Modo del mapa"
+          aria-label="Modo del mapa"
+        >
+          <Icons.Eye />
         </button>
 
         <div className={styles.userPill} onClick={onToggleUser}>

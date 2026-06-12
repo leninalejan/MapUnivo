@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   </head>
   <body>
-    <div id="boot-loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background-image:linear-gradient(rgba(11,19,32,.28), rgba(11,19,32,.28)),url('base-map.svg'),url('public/base-map.svg');background-color:#f4f1e7;background-position:center;background-repeat:no-repeat;background-size:contain;color:#eef4fb;font-family:Arial,sans-serif;">
+    <div id="boot-loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(rgba(11,19,32,.28), rgba(11,19,32,.28)),linear-gradient(135deg,#eef4fb 0%, #dce7f2 54%, #cfd9df 100%);background-color:#f4f1e7;background-position:center;background-repeat:no-repeat;background-size:cover;color:#eef4fb;font-family:Arial,sans-serif;">
       <div style="max-width:360px;width:100%;padding:24px 26px;border-radius:22px;background:rgba(10,16,24,.82);border:1px solid rgba(255,255,255,.10);box-shadow:0 24px 48px rgba(0,0,0,.24);text-align:center;">
         <div style="width:40px;height:40px;margin:0 auto 14px;border-radius:999px;border:3px solid rgba(244,248,255,.18);border-top-color:#f2b544;animation:spin 0.9s linear infinite;"></div>
         <div style="font-size:16px;font-weight:700;letter-spacing:.02em;">Cargando MapUNIVO</div>
@@ -37,10 +37,10 @@
           '.legacyItem{font-size:13px;line-height:1.35;padding:8px 10px;margin:0 0 8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:8px;}' +
           '.legacyMapWrap{position:relative;flex:1;overflow:hidden;background:#091725;}' +
           '.legacyMapPdf{position:absolute;inset:0;width:100%;height:100%;border:0;background:#f4f1e7;}' +
-          '.legacyMapFallback{position:absolute;inset:0;background:url("base-map.svg") center center / cover no-repeat;filter:saturate(1.05) contrast(1.03);}' +
+          '.legacyMapFallback{position:absolute;inset:0;background:linear-gradient(135deg,#eef4fb 0%, #dce7f2 54%, #cfd9df 100%);filter:saturate(1.05) contrast(1.03);}' +
           '.legacyShade{position:absolute;inset:0;background:linear-gradient(135deg, rgba(6,17,28,.32), rgba(6,17,28,.04));}' +
           '.legacyPin{position:absolute;transform:translate(-50%,-100%);background:#ffffff;color:#10243b;border-radius:999px;padding:4px 8px;font-size:12px;white-space:nowrap;box-shadow:0 6px 14px rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.08);}' +
-          '.legacyPin:before{content:"./public/base-map.svg";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:#ffffff;transform:rotate(45deg);border-right:1px solid rgba(0,0,0,.08);border-bottom:1px solid rgba(0,0,0,.08);}' +
+          '.legacyPin:before{content:"";position:absolute;left:50%;bottom:-6px;width:10px;height:10px;margin-left:-5px;background:#ffffff;transform:rotate(45deg);border-right:1px solid rgba(0,0,0,.08);border-bottom:1px solid rgba(0,0,0,.08);}' +
           '.legacyDot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}' +
           '.legacyBadge{position:absolute;right:12px;bottom:12px;padding:7px 10px;background:rgba(255,255,255,.88);color:#0f5ea8;border:1px solid rgba(15,94,168,.18);border-radius:8px;font-size:12px;}' +
           '.legacyNote{position:absolute;left:12px;bottom:12px;padding:7px 10px;background:rgba(255,255,255,.88);color:#5d7288;border:1px solid rgba(0,0,0,.08);border-radius:8px;font-size:12px;max-width:340px;}' +

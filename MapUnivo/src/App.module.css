@@ -8,6 +8,7 @@
     "sidebar    map"
     "statusbar  statusbar";
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
 }
@@ -28,6 +29,13 @@
   position: absolute;
   top: 14px;
   right: 62px;
+  z-index: 30;
+}
+
+.mapModePanelAnchor {
+  position: absolute;
+  top: 14px;
+  right: 14px;
   z-index: 30;
 }
 
@@ -144,11 +152,12 @@
 @media (max-width: 768px) {
   .app {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr 26px;
+    grid-template-rows: auto 1fr 28px;
     grid-template-areas:
       "topbar"
       "map"
       "statusbar";
+    height: 100dvh;
   }
 
   .mapWrapper {
@@ -159,11 +168,21 @@
     top: 92px;
     right: 10px;
   }
+
+  .mapModePanelAnchor {
+    top: 92px;
+    right: 10px;
+  }
 }
 
 @media (max-width: 520px) {
   .app {
     grid-template-rows: auto 1fr 34px;
+    height: 100dvh;
+  }
+
+  .mapWrapper {
+    min-height: calc(100dvh - 126px);
   }
 
   .mapLoading {
@@ -182,5 +201,11 @@
   .appErrorCard {
     padding: 20px 18px;
     border-radius: 18px;
+  }
+
+  .layerPanelAnchor,
+  .mapModePanelAnchor {
+    top: 86px;
+    right: 8px;
   }
 }

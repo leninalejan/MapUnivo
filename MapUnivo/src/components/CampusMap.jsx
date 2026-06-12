@@ -1,13 +1,43 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { renderToStaticMarkup } from 'react-dom/server'
 import { LAYER_CONFIG } from '../data/campusData.js'
 import { MAP_WIDTH, MAP_HEIGHT, MAP_BOUNDS, pointFromZone } from '../data/campusRoutes.js'
 import { Icons } from './Icons.jsx'
 import styles from './CampusMap.module.css'
-import baseMapUrl from '../assets/base-map.svg'
+import baseMapUrl from '../assets/base-map-standard.png'
+import baseMapDarkUrl from '../assets/base-map-standard-dark.png'
+import satelliteMapDarkUrl from '../assets/campus-satellite-dark.png'
+import satelliteMapLightUrl from '../assets/campus-satellite-light.png'
 
 const BASE_MAP_URL = baseMapUrl
+const BASE_MAP_DARK_URL = baseMapDarkUrl
+const SATELLITE_MAP_DARK_URL = satelliteMapDarkUrl
+const SATELLITE_MAP_LIGHT_URL = satelliteMapLightUrl
+
+const ZONE_ICON_MARKUP = {
+  building: renderToStaticMarkup(<Icons.Building />),
+  school: renderToStaticMarkup(<Icons.School />),
+  tools: renderToStaticMarkup(<Icons.Tools />),
+  coffee: renderToStaticMarkup(<Icons.Coffee />),
+  parking: renderToStaticMarkup(<Icons.Parking />),
+  pool: renderToStaticMarkup(<Icons.Pool />),
+  sports: renderToStaticMarkup(<Icons.Sports />),
+  tree: renderToStaticMarkup(<Icons.Tree />),
+  road: renderToStaticMarkup(<Icons.Road />),
+  gate: renderToStaticMarkup(<Icons.Gate />),
+  bus: renderToStaticMarkup(<Icons.Bus />),
+}
+
+function getSatelliteMapUrl(theme) {
+  return theme === 'dark' ? SATELLITE_MAP_DARK_URL : SATELLITE_MAP_LIGHT_URL
+}
+
+function getBaseMapUrl(mode, theme) {
+  if (mode === 'satellite') return getSatelliteMapUrl(theme)
+  return theme === 'dark' ? BASE_MAP_DARK_URL : BASE_MAP_URL
+}
 
 function getFitPadding(map) {
   const size = map?.getSize?.()
@@ -23,10 +53,56 @@ function getSafeZoom(map, fallback = 0) {
   return Number.isFinite(zoom) ? zoom : fallback
 }
 
-export default function CampusMap({ zones, layers, activeZone, onZoneClick, onToggleLayer = () => {}, route = null, routeSummary = null }) {
+function getZoneIcon(zone) {
+  const glyphs = {
+    entrada_principal: '🚪',
+    entrada_panamericana: '🏢',
+    bloque_principal: '🏛️',
+    administracion: '🛠️',
+    bloque_modular: '☕',
+    estacionamiento_oeste: '🅿️',
+    modulos_sur: '🏊',
+    area_dos: '⚽',
+    area_tres: '🌳',
+    calle_univo: '🛣️',
+    carretera_panamericana: '🛣️',
+    garita_norte: '🚍',
+  }
+
+  return glyphs[zone.id] || zone.icon || '•'
+}
+
+function getZoneIconMarkup(zone) {
+  return ZONE_ICON_MARKUP[zone.iconKey] || getZoneIcon(zone)
+}
+
+function makeZoneMarker(zone) {
+  const glyph = getZoneIconMarkup(zone)
+  const markerClassMap = {
+    edificios: styles.markerEdificios,
+    servicios: styles.markerServicios,
+    areas_verdes: styles.markerAreas,
+    estacionamiento: styles.markerEstacionamiento,
+    accesos: styles.markerAccesos,
+  }
+
+  return L.divIcon({
+    className: styles.zoneMarkerRoot,
+    html: `
+      <div class="${styles.zoneMarker} ${markerClassMap[zone.cat] || ''}" style="--zone-color: ${zone.color}">
+        <span class="${styles.zoneMarkerGlyph}">${glyph}</span>
+      </div>
+    `,
+    iconSize: [34, 34],
+    iconAnchor: [17, 17],
+  })
+}
+
+export default function CampusMap({ zones, layers, activeZone, onZoneClick, onToggleLayer = () => {}, onClearRoute = () => {}, route = null, routeSummary = null, mapMode = 'standard', theme = 'dark' }) {
   const mapNodeRef = useRef(null)
   const mapRef = useRef(null)
   const baseLayerRef = useRef(null)
+  const baseLayerTokenRef = useRef(0)
   const markerRefs = useRef({})
   const routeLayerRef = useRef(null)
   const onZoneClickRef = useRef(onZoneClick)
@@ -35,6 +111,57 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
   useEffect(() => {
     onZoneClickRef.current = onZoneClick
   }, [onZoneClick])
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    const token = ++baseLayerTokenRef.current
+    baseLayerRef.current?.remove()
+    baseLayerRef.current = null
+    setBaseReady(false)
+
+    const baseLayer = L.imageOverlay(getBaseMapUrl(mapMode, theme), MAP_BOUNDS, {
+      pane: 'campus-base',
+      interactive: false,
+    })
+
+    const applyBaseStyle = () => {
+      const element = baseLayer.getElement?.()
+      if (!element) return
+
+      element.style.transition = 'filter 180ms ease, opacity 180ms ease'
+
+      if (mapMode === 'satellite') {
+        element.style.filter = 'saturate(1.15) contrast(1.08) brightness(0.92) hue-rotate(-8deg)'
+      } else {
+        element.style.filter = 'none'
+      }
+    }
+
+    const markReady = () => {
+      if (baseLayerTokenRef.current !== token) return
+      setBaseReady(true)
+      applyBaseStyle()
+    }
+
+    baseLayer.on('load', markReady)
+    baseLayer.on('error', markReady)
+    baseLayer.addTo(map)
+    baseLayerRef.current = baseLayer
+
+    const timer = window.setTimeout(markReady, 120)
+
+    return () => {
+      window.clearTimeout(timer)
+      baseLayer.off('load', markReady)
+      baseLayer.off('error', markReady)
+      if (baseLayerTokenRef.current === token && baseLayerRef.current === baseLayer) {
+        baseLayerRef.current?.remove()
+        baseLayerRef.current = null
+      }
+    }
+  }, [mapMode, theme])
 
   useEffect(() => {
     if (!mapNodeRef.current || mapRef.current) return
@@ -65,45 +192,84 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
     const routePane = map.createPane('campus-route')
     routePane.style.zIndex = '550'
 
-    const baseLayer = L.imageOverlay(BASE_MAP_URL, MAP_BOUNDS, {
+    const baseLayer = L.imageOverlay(getBaseMapUrl(mapMode, theme), MAP_BOUNDS, {
       pane: 'campus-base',
       interactive: false,
     })
-    baseLayer.on('load', () => {
-      if (alive) setBaseReady(true)
-    })
-    baseLayer.on('error', () => {
-      if (alive) setBaseReady(true)
-    })
-    baseLayer.addTo(map)
     baseLayerRef.current = baseLayer
 
-    const readyTimer = window.setTimeout(() => {
-      if (alive) setBaseReady(true)
-    }, 80)
+    const markReady = () => {
+      if (!alive) return
+      if (baseLayerRef.current !== baseLayer) return
+      setBaseReady(true)
+      const element = baseLayer.getElement?.()
+      if (element) {
+        element.style.transition = 'filter 180ms ease, opacity 180ms ease'
+        if (mapMode === 'satellite') {
+          element.style.filter = 'saturate(1.15) contrast(1.08) brightness(0.92) hue-rotate(-8deg)'
+        } else {
+          element.style.filter = 'none'
+        }
+      }
+    }
+
+    baseLayer.on('load', markReady)
+    baseLayer.on('error', markReady)
+    baseLayer.addTo(map)
+
+    const readyTimer = window.setTimeout(markReady, 80)
 
     zones.forEach(zone => {
-      const marker = L.circleMarker(pointFromZone(zone), {
+      const marker = L.marker(pointFromZone(zone), {
         pane: 'campus-markers',
-        radius: 6,
-        color: '#ffffff',
-        weight: 2,
-        fillColor: zone.color,
-        fillOpacity: 1,
-        opacity: 1,
+        icon: makeZoneMarker(zone),
+        keyboard: false,
+        interactive: true,
+        riseOnHover: true,
       })
 
       marker.bindTooltip(zone.name, {
-        permanent: true,
-        direction: 'right',
-        offset: [10, 0],
+        permanent: false,
+        direction: 'top',
+        offset: [0, -8],
         className: styles.zoneTooltip,
         opacity: 1,
-        sticky: false,
+        sticky: true,
       })
 
-      marker.on('click', () => {
+      const openZone = (event) => {
+        event?.preventDefault?.()
+        event?.stopPropagation?.()
+        if (event?.originalEvent) {
+          L.DomEvent.stop(event.originalEvent)
+        }
         onZoneClickRef.current(zone)
+      }
+
+      marker.on('add', () => {
+        const el = marker.getElement?.()
+        if (!el) return
+        L.DomEvent.disableClickPropagation(el)
+        L.DomEvent.disableScrollPropagation(el)
+
+        let lastTouchAt = 0
+        const handleClick = (event) => {
+          if (Date.now() - lastTouchAt < 700) return
+          openZone(event)
+        }
+
+        const handleTouchEnd = (event) => {
+          lastTouchAt = Date.now()
+          openZone(event)
+        }
+
+        el.addEventListener('click', handleClick)
+        el.addEventListener('touchend', handleTouchEnd, { passive: false })
+
+        marker.once('remove', () => {
+          el.removeEventListener('click', handleClick)
+          el.removeEventListener('touchend', handleTouchEnd)
+        })
       })
 
       markerRefs.current[zone.id] = marker
@@ -137,6 +303,8 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       window.cancelAnimationFrame(rafId)
       window.removeEventListener('resize', handleResize)
       window.clearTimeout(readyTimer)
+      baseLayer.off('load', markReady)
+      baseLayer.off('error', markReady)
       baseLayerRef.current?.remove()
       baseLayerRef.current = null
       routeLayerRef.current?.remove()
@@ -163,27 +331,15 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
           marker.addTo(map)
         }
 
-        marker.setStyle({
-          radius: isActive ? 9 : 6,
-          weight: isActive ? 3 : 2,
-          color: isActive ? zone.color : '#ffffff',
-          fillColor: zone.color,
-          fillOpacity: 1,
-        })
-
         if (isActive) {
-          marker.bringToFront()
+          marker.setZIndexOffset(1000)
+        } else {
+          marker.setZIndexOffset(0)
         }
       } else if (map.hasLayer(marker)) {
         marker.remove()
       }
     })
-
-    if (!route && activeZone && layers[activeZone.cat]) {
-      const point = pointFromZone(activeZone)
-      const nextZoom = Math.min(4.25, Math.max(getSafeZoom(map, 2.8), 2.8))
-      map.setView(point, nextZoom, { animate: true })
-    }
   }, [zones, layers, activeZone, route])
 
   useEffect(() => {
@@ -327,7 +483,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
     <div className={styles.mapArea}>
       <div
         ref={mapNodeRef}
-        className={styles.leafletViewport}
+        className={`${styles.leafletViewport} ${mapMode === 'satellite' ? styles.modeSatellite : ''} ${mapMode === 'standard' && theme === 'dark' ? styles.modeStandardDark : ''} ${mapMode === 'standard' && theme === 'light' ? styles.modeStandardLight : ''}`}
         aria-label="Mapa topografico UNIVO"
       />
 
@@ -351,14 +507,25 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         <div className={styles.navigationCard}>
           <div className={styles.navigationCardHeader}>
             <span className={styles.navigationPill}>Modo navegacion</span>
-            <button
-              className={styles.navigationButton}
-              onClick={handleFocusRoute}
-              title="Centrar ruta"
-              aria-label="Centrar ruta"
-            >
-              <Icons.Route />
-            </button>
+            <div className={styles.navigationActions}>
+              <button
+                className={styles.navigationButton}
+                onClick={handleFocusRoute}
+                title="Centrar ruta"
+                aria-label="Centrar ruta"
+              >
+                <Icons.Route />
+              </button>
+              <button
+                className={styles.navigationCancel}
+                onClick={onClearRoute}
+                title="Cancelar navegacion"
+                aria-label="Cancelar navegacion"
+              >
+                <Icons.Reset />
+                <span>Cancelar</span>
+              </button>
+            </div>
           </div>
           <div className={styles.navigationTitle}>
             {routeSummary.origin.name} {'\u2192'} {routeSummary.destination.name}
@@ -377,6 +544,8 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       )}
 
       <div className={styles.controls} onClick={e => e.stopPropagation()}>
+        <div className={styles.ctrlDivider} />
+
         <button
           className={styles.ctrlBtn}
           onClick={handleZoomIn}

@@ -31,7 +31,7 @@ export default function Sidebar({
   }, [])
 
   const quickZones = useMemo(() => {
-    const ids = ['entrada_principal', 'bloque_principal', 'administracion', 'area_tres']
+    const ids = ['entrada_principal', 'entrada_panamericana', 'bloque_principal', 'area_dos']
     return ids.map(id => CAMPUS_ZONES.find(zone => zone.id === id)).filter(Boolean)
   }, [])
 

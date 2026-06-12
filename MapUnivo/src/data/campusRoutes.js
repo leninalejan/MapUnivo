@@ -5,31 +5,31 @@ export const MAP_HEIGHT = 600
 export const MAP_BOUNDS = [[0, 0], [MAP_HEIGHT, MAP_WIDTH]]
 
 const ROUTE_HUBS = {
-  north_gate: { point: [112, 545] },
-  north_connector: { point: [160, 505] },
-  north_central: { point: [220, 435] },
-  center_hub: { point: [305, 392] },
-  west_hub: { point: [360, 170] },
-  east_hub: { point: [320, 620] },
-  east_spine: { point: [260, 620] },
-  north_east_spine: { point: [150, 590] },
-  south_hub: { point: [430, 405] },
-  south_access: { point: [530, 390] },
-  panamericana_gate: { point: [558, 340] },
+  north_gate: { point: [96, 730] },
+  north_connector: { point: [108, 600] },
+  north_central: { point: [118, 420] },
+  center_hub: { point: [330, 410] },
+  west_hub: { point: [250, 150] },
+  east_hub: { point: [440, 650] },
+  east_spine: { point: [260, 705] },
+  north_east_spine: { point: [150, 710] },
+  south_hub: { point: [470, 480] },
+  south_access: { point: [515, 220] },
+  panamericana_gate: { point: [560, 540] },
 }
 
 const ROUTE_NODE_LABELS = {
-  north_gate: 'Conexión norte',
+  north_gate: 'Conexion norte',
   north_connector: 'Tramo norte',
   north_central: 'Cruce norte central',
-  center_hub: 'Núcleo central',
+  center_hub: 'Nucleo central',
   west_hub: 'Enlace oeste',
   east_hub: 'Enlace este',
   east_spine: 'Corredor este',
   north_east_spine: 'Bajada noreste',
-  south_hub: 'Núcleo sur',
+  south_hub: 'Nucleo sur',
   south_access: 'Acceso sur',
-  panamericana_gate: 'Portón Panamericana',
+  panamericana_gate: 'Porton Panamericana',
 }
 
 const HUB_EDGES = [
@@ -44,6 +44,7 @@ const HUB_EDGES = [
   ['center_hub', 'administracion'],
   ['center_hub', 'bloque_modular'],
   ['west_hub', 'estacionamiento_oeste'],
+  ['west_hub', 'entrada_panamericana'],
   ['east_hub', 'area_dos'],
   ['east_hub', 'calle_univo'],
   ['east_hub', 'east_spine'],
@@ -53,28 +54,29 @@ const HUB_EDGES = [
   ['south_hub', 'south_access'],
   ['south_access', 'panamericana_gate'],
   ['south_access', 'carretera_panamericana'],
-  ['south_access', 'entrada_panamericana'],
+  ['south_access', 'entrada_principal'],
   ['panamericana_gate', 'carretera_panamericana'],
-  ['panamericana_gate', 'entrada_panamericana'],
   ['calle_univo', 'north_gate'],
-  ['area_dos', 'east_hub'],
-  ['entrada_principal', 'north_gate'],
   ['garita_norte', 'north_gate'],
 ]
 
 const ZONE_LINKS = {
-  entrada_principal: ['north_gate'],
-  garita_norte: ['north_gate'],
+  entrada_principal: ['south_access'],
+  entrada_panamericana: ['west_hub'],
   bloque_principal: ['center_hub'],
   administracion: ['center_hub'],
-  bloque_modular: ['center_hub'],
+  bloque_modular: ['south_hub'],
   estacionamiento_oeste: ['west_hub'],
-  modulos_sur: ['south_hub', 'south_access'],
+  estacionamiento_central: ['center_hub'],
+  estacionamiento_sur: ['south_access'],
+  modulos_sur: ['south_hub'],
   area_dos: ['east_hub'],
   area_tres: ['north_central'],
+  area_verde_sur: ['south_hub'],
+  canchas: ['north_connector'],
   calle_univo: ['east_spine'],
   carretera_panamericana: ['south_access', 'panamericana_gate'],
-  entrada_panamericana: ['south_access', 'panamericana_gate'],
+  garita_norte: ['north_gate'],
 }
 
 function normalizeText(value) {
@@ -201,14 +203,7 @@ export function findCampusLocation(query) {
 
   const scored = CAMPUS_ZONES
     .map(zone => {
-      const fields = [
-        zone.name,
-        zone.id,
-        zone.badge,
-        zone.cat,
-        zone.desc,
-      ]
-
+      const fields = [zone.name, zone.id, zone.badge, zone.cat, zone.desc]
       const normalizedFields = fields.map(normalizeText)
       let score = 0
 

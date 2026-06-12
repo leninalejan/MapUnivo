@@ -4,6 +4,7 @@ import Topbar      from './components/Topbar.jsx'
 import Sidebar     from './components/Sidebar.jsx'
 import InfoPanel   from './components/InfoPanel.jsx'
 import LayerPanel  from './components/LayerPanel.jsx'
+import MapModePanel from './components/MapModePanel.jsx'
 import UserMenu    from './components/UserMenu.jsx'
 import StatusBar   from './components/StatusBar.jsx'
 import Toast       from './components/Toast.jsx'
@@ -123,6 +124,7 @@ function MainApp({ user, theme, onToggleTheme }) {
   const [activeZone,   setActiveZone]   = useState(null)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showLayers,   setShowLayers]   = useState(false)
+  const [showMapModes, setShowMapModes] = useState(false)
   const [sidebarOpen,  setSidebarOpen]  = useState(false)
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [toast,        setToast]        = useState(null)
@@ -130,6 +132,7 @@ function MainApp({ user, theme, onToggleTheme }) {
   const [routeTo,      setRouteTo]      = useState('')
   const [routePlan,    setRoutePlan]    = useState(null)
   const [routeError,   setRouteError]   = useState('')
+  const [mapMode,     setMapMode]      = useState('standard')
   const routeSummary = useMemo(() => {
     if (!routePlan) return null
 
@@ -152,7 +155,7 @@ function MainApp({ user, theme, onToggleTheme }) {
 
   // Close dropdowns on outside click
   useEffect(() => {
-    const h = () => { setShowUserMenu(false); setShowLayers(false) }
+    const h = () => { setShowUserMenu(false); setShowLayers(false); setShowMapModes(false) }
     document.addEventListener('click', h)
     return () => document.removeEventListener('click', h)
   }, [])
@@ -273,7 +276,7 @@ function MainApp({ user, theme, onToggleTheme }) {
     <div
       className={styles.app}
       style={{ '--sidebar-width': sidebarCollapsed ? '84px' : '290px' }}
-      onClick={() => { setShowUserMenu(false); setShowLayers(false); setSidebarOpen(false) }}
+      onClick={() => { setShowUserMenu(false); setShowLayers(false); setShowMapModes(false); setSidebarOpen(false) }}
     >
 
       {/* ── Topbar ── */}
@@ -281,12 +284,14 @@ function MainApp({ user, theme, onToggleTheme }) {
         user={user}
         onSearch={handleZoneClick}
         layersOpen={showLayers}
+        mapModesOpen={showMapModes}
         sidebarOpen={sidebarOpen || sidebarCollapsed}
         theme={theme}
         onToggleTheme={onToggleTheme}
         onToggleSidebar={toggleSidebar}
-        onToggleLayers={e => { e.stopPropagation(); setShowLayers(p => !p); setShowUserMenu(false) }}
-        onToggleUser={e  => { e.stopPropagation(); setShowUserMenu(p => !p); setShowLayers(false) }}
+        onToggleLayers={e => { e.stopPropagation(); setShowLayers(p => !p); setShowUserMenu(false); setShowMapModes(false) }}
+        onToggleMapModes={e => { e.stopPropagation(); setShowMapModes(p => !p); setShowLayers(false); setShowUserMenu(false) }}
+        onToggleUser={e  => { e.stopPropagation(); setShowUserMenu(p => !p); setShowLayers(false); setShowMapModes(false) }}
       />
 
       {/* ── Sidebar ── */}
@@ -319,8 +324,11 @@ function MainApp({ user, theme, onToggleTheme }) {
             activeZone={activeZone}
             onZoneClick={handleZoneClick}
             onToggleLayer={handleToggleLayer}
+            onClearRoute={handleClearRoute}
             route={routePlan}
             routeSummary={routeSummary}
+            mapMode={mapMode}
+            theme={theme}
           />
         </Suspense>
 
@@ -331,6 +339,16 @@ function MainApp({ user, theme, onToggleTheme }) {
               layers={layers}
               onToggle={handleToggleLayer}
               onClose={() => setShowLayers(false)}
+            />
+          </div>
+        )}
+
+        {showMapModes && (
+          <div className={styles.mapModePanelAnchor} onClick={e => e.stopPropagation()}>
+            <MapModePanel
+              mode={mapMode}
+              onChange={setMapMode}
+              onClose={() => setShowMapModes(false)}
             />
           </div>
         )}
