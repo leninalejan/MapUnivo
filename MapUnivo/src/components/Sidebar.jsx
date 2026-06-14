@@ -1,15 +1,18 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { CAMPUS_ZONES, LAYER_CONFIG, CAT_LABELS } from '../data/campusData.js'
+import { getIconGlyphByKey } from '../data/iconOptions.js'
 import { Icons } from './Icons.jsx'
 import styles from './Sidebar.module.css'
 
 export default function Sidebar({
+  zones = CAMPUS_ZONES,
   activeZone,
   onZoneClick,
   open,
   onClose,
   collapsed,
   onToggleCollapse,
+  onResizeWidth,
   layers,
   onToggleLayer,
   routeFrom,
@@ -23,23 +26,72 @@ export default function Sidebar({
 }) {
   const grouped = useMemo(() => {
     const g = {}
-    CAMPUS_ZONES.forEach(z => {
+    zones.forEach(z => {
       if (!g[z.cat]) g[z.cat] = []
       g[z.cat].push(z)
     })
     return g
-  }, [])
+  }, [zones])
 
   const quickZones = useMemo(() => {
     const ids = ['entrada_principal', 'entrada_panamericana', 'bloque_principal', 'area_dos']
-    return ids.map(id => CAMPUS_ZONES.find(zone => zone.id === id)).filter(Boolean)
-  }, [])
+    return ids.map(id => zones.find(zone => zone.id === id)).filter(Boolean)
+  }, [zones])
 
   const parkingZones = useMemo(() => {
     return (grouped.estacionamiento || []).slice()
   }, [grouped])
 
   const visibleLayerCount = Object.values(layers).filter(Boolean).length
+  const resizeHandleRef = useRef(null)
+  const dragStateRef = useRef(null)
+  const dragCleanupRef = useRef(() => {})
+
+  useEffect(() => {
+    return () => {
+      dragCleanupRef.current?.()
+    }
+  }, [])
+
+  const handleResizeStart = (event) => {
+    if (collapsed) return
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) return
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    dragStateRef.current = {
+      startX: event.clientX,
+      startWidth: resizeHandleRef.current?.parentElement?.getBoundingClientRect().width || 320,
+    }
+
+    const handlePointerMove = (moveEvent) => {
+      const state = dragStateRef.current
+      if (!state) return
+
+      const delta = moveEvent.clientX - state.startX
+      const nextWidth = Math.max(260, Math.min(480, Math.round(state.startWidth + delta)))
+      onResizeWidth?.(nextWidth)
+    }
+
+    const finishDrag = () => {
+      dragStateRef.current = null
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+      window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('pointerup', finishDrag)
+      window.removeEventListener('pointercancel', finishDrag)
+      dragCleanupRef.current = () => {}
+    }
+
+    document.body.style.cursor = 'ew-resize'
+    document.body.style.userSelect = 'none'
+
+    window.addEventListener('pointermove', handlePointerMove)
+    window.addEventListener('pointerup', finishDrag, { once: true })
+    window.addEventListener('pointercancel', finishDrag, { once: true })
+    dragCleanupRef.current = finishDrag
+  }
 
   return (
     <aside className={`${styles.sidebar} ${open ? styles.open : ''} ${collapsed ? styles.collapsed : ''}`} onClick={e => e.stopPropagation()}>
@@ -91,11 +143,29 @@ export default function Sidebar({
           </div>
 
           <div className={styles.collapsedQuickLabel}>Acceso rapido</div>
+          <div className={styles.collapsedLayerLabel}>Capas</div>
+          <div className={styles.collapsedLayerGrid}>
+            {LAYER_CONFIG.map(layer => {
+              const active = !!layers[layer.id]
+              return (
+                <button
+                  key={layer.id}
+                  type="button"
+                  className={`${styles.collapsedLayerBtn} ${active ? styles.collapsedLayerBtnOn : ''}`}
+                  onClick={() => onToggleLayer(layer.id)}
+                  title={active ? `Ocultar ${layer.label}` : `Mostrar ${layer.label}`}
+                >
+                  <span className={styles.collapsedLayerDot} style={{ background: layer.color }} />
+                  <span className={styles.collapsedLayerText}>{layer.label}</span>
+                </button>
+              )
+            })}
+          </div>
           <div className={styles.collapsedQuickGrid}>
             <button
               type="button"
               className={styles.dockBtn}
-              onClick={() => onZoneClick(activeZone || CAMPUS_ZONES[0])}
+              onClick={() => onZoneClick(activeZone || zones[0])}
               title="Ir a la zona activa"
             >
               <span className={styles.dockBtnIcon}><Icons.Pin /></span>
@@ -110,7 +180,7 @@ export default function Sidebar({
                 onClick={() => onZoneClick(zone)}
                 title={zone.name}
               >
-                <span className={styles.dockBtnIcon} style={{ color: zone.color }}>{zone.icon}</span>
+                <span className={styles.dockBtnIcon} style={{ color: zone.color }}>{getIconGlyphByKey(zone.iconKey)}</span>
                 <span className={styles.dockBtnText}>{zone.name}</span>
               </button>
             ))}
@@ -151,7 +221,7 @@ export default function Sidebar({
                     onClick={() => onZoneClick(z)}
                     title={z.name}
                   >
-                    <div className={styles.zoneIcon}>{z.icon}</div>
+                    <div className={styles.zoneIcon}>{getIconGlyphByKey(z.iconKey)}</div>
                     <div className={styles.zoneDot} style={{ background: z.color }} />
                     <span className={styles.zoneName}>{z.name}</span>
                     <span className={styles.zoneBadge}>{z.badge}</span>
@@ -172,7 +242,7 @@ export default function Sidebar({
                     onClick={() => onZoneClick(z)}
                     title={z.name}
                   >
-                    <div className={styles.zoneIcon}>{z.icon}</div>
+                    <div className={styles.zoneIcon}>{getIconGlyphByKey(z.iconKey)}</div>
                     <div className={styles.zoneDot} style={{ background: z.color }} />
                     <span className={styles.zoneName}>{z.name}</span>
                     <span className={styles.zoneBadge}>{z.badge}</span>
@@ -262,8 +332,8 @@ export default function Sidebar({
                 Calcular ruta
               </button>
 
-              <datalist id="campus-route-points">
-                {CAMPUS_ZONES.map(z => (
+                <datalist id="campus-route-points">
+                {zones.map(z => (
                   <option key={z.id} value={z.name} />
                 ))}
               </datalist>
@@ -289,6 +359,16 @@ export default function Sidebar({
             </div>
           </div>
         </>
+      )}
+      {!collapsed && (
+        <button
+          ref={resizeHandleRef}
+          type="button"
+          className={styles.resizeHandle}
+          onPointerDown={handleResizeStart}
+          aria-label="Ajustar ancho del panel"
+          title="Arrastra para ajustar el ancho"
+        />
       )}
     </aside>
   )

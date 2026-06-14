@@ -1,23 +1,23 @@
-// src/components/Topbar.jsx
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { CAMPUS_ZONES } from '../data/campusData.js'
+import { getIconGlyphByKey } from '../data/iconOptions.js'
 import { Icons } from './Icons.jsx'
 import styles from './Topbar.module.css'
 
-function SearchBar({ onSelect }) {
+function SearchBar({ onSelect, zones }) {
   const [query, setQuery] = useState('')
-  const [open, setOpen]   = useState(false)
+  const [open, setOpen] = useState(false)
   const ref = useRef()
 
   const results = useMemo(() => {
     if (!query.trim()) return []
     const q = query.toLowerCase()
-    return CAMPUS_ZONES.filter(z =>
+    return zones.filter(z =>
       z.name.toLowerCase().includes(q) ||
       z.badge.toLowerCase().includes(q) ||
       z.cat.toLowerCase().includes(q)
     ).slice(0, 7)
-  }, [query])
+  }, [query, zones])
 
   useEffect(() => {
     const h = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false) }
@@ -44,7 +44,7 @@ function SearchBar({ onSelect }) {
               onClick={() => { onSelect(z); setQuery(''); setOpen(false) }}
             >
               <div className={styles.dropIcon} style={{ background: z.color + '22' }}>
-                {z.icon}
+                {getIconGlyphByKey(z.iconKey)}
               </div>
               <div className={styles.dropInfo}>
                 <div className={styles.dropName}>{z.name}</div>
@@ -59,19 +59,18 @@ function SearchBar({ onSelect }) {
   )
 }
 
-export default function Topbar({ user, onSearch, onToggleLayers, onToggleMapModes, onToggleUser, onToggleSidebar, sidebarOpen, layersOpen, mapModesOpen, theme, onToggleTheme }) {
+export default function Topbar({ user, zones = CAMPUS_ZONES, onSearch, onToggleLayers, onToggleMapModes, onToggleUser, onToggleSidebar, sidebarOpen, layersOpen, mapModesOpen, theme, onToggleTheme }) {
   return (
     <header className={styles.topbar}>
       <button
         className={`${styles.iconBtn} ${styles.menuBtn} ${sidebarOpen ? styles.active : ''}`}
         onClick={onToggleSidebar}
-        title="Abrir menu"
-        aria-label="Abrir menu"
+        title="Abrir menú"
+        aria-label="Abrir menú"
       >
         <Icons.Menu />
       </button>
 
-      {/* Brand */}
       <div className={styles.brand}>
         <div className={styles.brandIcon}>
           <img
@@ -84,10 +83,8 @@ export default function Topbar({ user, onSearch, onToggleLayers, onToggleMapMode
         </span>
       </div>
 
-      {/* Search */}
-      <SearchBar onSelect={onSearch} />
+      <SearchBar onSelect={onSearch} zones={zones} />
 
-      {/* Right actions */}
       <div className={styles.right}>
         <button
           className={styles.iconBtn}

@@ -41,16 +41,28 @@ function getBaseMapUrl(mode, theme) {
 
 function getFitPadding(map) {
   const size = map?.getSize?.()
-  if (!size?.x || !size?.y) return [16, 16]
+  if (!size?.x || !size?.y) return [4, 4]
 
   const shortestSide = Math.min(size.x, size.y)
-  const padding = Math.max(10, Math.min(28, Math.round(shortestSide * 0.04)))
+  const padding = Math.max(2, Math.min(10, Math.round(shortestSide * 0.012)))
   return [padding, padding]
 }
 
 function getSafeZoom(map, fallback = 0) {
   const zoom = map?.getZoom?.()
   return Number.isFinite(zoom) ? zoom : fallback
+}
+
+function pointToZonePosition(point) {
+  if (!point) return { px: 0, py: 0 }
+
+  const lat = Number(point.lat ?? point[0] ?? 0)
+  const lng = Number(point.lng ?? point[1] ?? 0)
+
+  return {
+    px: Math.max(0, Math.min(100, (lng / MAP_WIDTH) * 100)),
+    py: Math.max(0, Math.min(100, (lat / MAP_HEIGHT) * 100)),
+  }
 }
 
 function getZoneIcon(zone) {
@@ -98,7 +110,22 @@ function makeZoneMarker(zone) {
   })
 }
 
-export default function CampusMap({ zones, layers, activeZone, onZoneClick, onToggleLayer = () => {}, onClearRoute = () => {}, route = null, routeSummary = null, mapMode = 'standard', theme = 'dark' }) {
+export default function CampusMap({
+  zones,
+  layers,
+  activeZone,
+  onZoneClick,
+  onAdminPinClick = () => {},
+  onToggleLayer = () => {},
+  onClearRoute = () => {},
+  route = null,
+  routeSummary = null,
+  mapMode = 'standard',
+  theme = 'dark',
+  user,
+  onUpdateZonePosition = () => {},
+  editingZoneId = null,
+}) {
   const mapNodeRef = useRef(null)
   const mapRef = useRef(null)
   const baseLayerRef = useRef(null)
@@ -106,11 +133,27 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
   const markerRefs = useRef({})
   const routeLayerRef = useRef(null)
   const onZoneClickRef = useRef(onZoneClick)
+  const onAdminPinClickRef = useRef(onAdminPinClick)
+  const onUpdateZonePositionRef = useRef(onUpdateZonePosition)
+  const editingZoneIdRef = useRef(editingZoneId)
+  const isAdmin = user?.access === 'admin'
   const [baseReady, setBaseReady] = useState(false)
 
   useEffect(() => {
     onZoneClickRef.current = onZoneClick
   }, [onZoneClick])
+
+  useEffect(() => {
+    onAdminPinClickRef.current = onAdminPinClick
+  }, [onAdminPinClick])
+
+  useEffect(() => {
+    onUpdateZonePositionRef.current = onUpdateZonePosition
+  }, [onUpdateZonePosition])
+
+  useEffect(() => {
+    editingZoneIdRef.current = editingZoneId
+  }, [editingZoneId])
 
   useEffect(() => {
     mapModeRef.current = mapMode
@@ -183,6 +226,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         keyboard: true,
         interactive: true,
         riseOnHover: true,
+        draggable: isAdmin,
       })
 
       marker.bindTooltip(zone.name, {
@@ -200,6 +244,10 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         if (event?.originalEvent) {
           L.DomEvent.stop(event.originalEvent)
         }
+        if (isAdmin) {
+          onAdminPinClickRef.current(zone)
+          return
+        }
         onZoneClickRef.current(zone)
       }
 
@@ -212,7 +260,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         el.setAttribute('tabindex', '0')
         el.setAttribute('aria-label', zone.name)
         el.setAttribute('title', zone.name)
-        el.style.cursor = 'pointer'
+        el.style.cursor = isAdmin && editingZoneId === zone.id ? 'move' : 'pointer'
 
         let lastTouchAt = 0
         const handleClick = (event) => {
@@ -231,16 +279,35 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
           openZone(event)
         }
 
+        const handleDragEnd = () => {
+          if (!isAdmin || editingZoneIdRef.current !== zone.id) return
+          const nextPosition = pointToZonePosition(marker.getLatLng())
+          onUpdateZonePositionRef.current(zone.id, nextPosition)
+        }
+
         el.addEventListener('click', handleClick)
         el.addEventListener('touchend', handleTouchEnd, { passive: false })
         el.addEventListener('keydown', handleKeyDown)
+        marker.on('dragend', handleDragEnd)
 
         marker.once('remove', () => {
           el.removeEventListener('click', handleClick)
           el.removeEventListener('touchend', handleTouchEnd)
           el.removeEventListener('keydown', handleKeyDown)
+          marker.off('dragend', handleDragEnd)
         })
       })
+
+      if (isAdmin) {
+        marker.on('dragstart', () => {
+          marker.getElement?.()?.classList.add(styles.markerDragging)
+        })
+        marker.on('dragend', () => {
+          marker.getElement?.()?.classList.remove(styles.markerDragging)
+        })
+      } else {
+        marker.dragging?.disable?.()
+      }
 
       markerRefs.current[zone.id] = marker
     })
@@ -283,7 +350,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       markerRefs.current = {}
       mapRef.current = null
     }
-  }, [zones])
+  }, [isAdmin])
 
   useEffect(() => {
     const baseLayer = baseLayerRef.current
@@ -303,6 +370,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
 
       const visible = !!layers[zone.cat]
       const isActive = activeZone?.id === zone.id
+      marker.setLatLng(pointFromZone(zone))
 
       if (!map.hasLayer(marker)) {
         marker.addTo(map)
@@ -327,21 +395,40 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
   }, [zones, layers, activeZone, route])
 
   useEffect(() => {
+    zones.forEach(zone => {
+      const marker = markerRefs.current[zone.id]
+      if (!marker) return
+
+      const editable = isAdmin && editingZoneId === zone.id
+      if (editable) {
+        marker.dragging?.enable?.()
+      } else {
+        marker.dragging?.disable?.()
+      }
+
+      const el = marker.getElement?.()
+      if (el) {
+        el.style.cursor = editable ? 'move' : 'pointer'
+      }
+    })
+  }, [zones, isAdmin, editingZoneId])
+
+  useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
     routeLayerRef.current?.remove()
     routeLayerRef.current = null
 
-    if (!route?.points?.length) {
-      if (!activeZone) {
-        try {
-          map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: false })
-        } catch {
-          map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], -0.25, { animate: false })
+      if (!route?.points?.length) {
+        if (!activeZone) {
+          try {
+            map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: false })
+          } catch {
+            map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], -0.25, { animate: false })
+          }
         }
-      }
-      return
+        return
     }
 
     const routeGroup = L.layerGroup()
@@ -427,7 +514,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
 
     if (activeZone && layers[activeZone.cat]) {
       const point = pointFromZone(activeZone)
-      const nextZoom = Math.min(4.25, Math.max(getSafeZoom(map, 2.8), 2.8))
+      const nextZoom = Math.min(4.35, Math.max(getSafeZoom(map, 2.8), 2.8) + 0.15)
       map.setView(point, nextZoom, { animate: true })
       return
     }
@@ -438,7 +525,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         [0, 0]
       ).map(total => total / routeSummary.points.length)
 
-      map.setView(routeCenter, Math.min(4.5, Math.max(getSafeZoom(map, 2.8), 2.8)), {
+      map.setView(routeCenter, Math.min(4.5, Math.max(getSafeZoom(map, 2.8), 2.8) + 0.15), {
         animate: true,
       })
       return
@@ -458,7 +545,7 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
       [0, 0]
     ).map(total => total / routeSummary.points.length)
 
-    map.setView(routeCenter, Math.min(4.5, Math.max(getSafeZoom(map, 2.8), 2.8)), {
+    map.setView(routeCenter, Math.min(4.5, Math.max(getSafeZoom(map, 2.8), 2.8) + 0.15), {
       animate: true,
     })
   }
@@ -564,23 +651,6 @@ export default function CampusMap({ zones, layers, activeZone, onZoneClick, onTo
         >
           <Icons.Pin />
         </button>
-      </div>
-
-      <div className={styles.legendBar} onClick={e => e.stopPropagation()}>
-        {LAYER_CONFIG.map(layer => {
-          const active = !!layers[layer.id]
-          return (
-            <button
-              key={layer.id}
-              className={`${styles.legendChip} ${active ? styles.legendChipOn : ''}`}
-              onClick={() => onToggleLayer(layer.id)}
-              title={active ? 'Ocultar capa' : 'Mostrar capa'}
-            >
-              <span className={styles.legendDot} style={{ background: layer.color }} />
-              {layer.label}
-            </button>
-          )
-        })}
       </div>
 
       <div className={styles.scaleBar}>

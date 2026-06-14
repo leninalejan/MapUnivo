@@ -1,11 +1,11 @@
 /* src/components/InfoPanel.module.css */
 .panel {
   position: absolute;
-  left: 14px;
+  right: 14px;
   bottom: 14px;
   width: 288px;
   padding: 18px;
-  z-index: 20;
+  z-index: 180;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent),
     var(--surface);
@@ -198,10 +198,10 @@
   .panel {
     left: 10px;
     right: 10px;
-    bottom: 82px;
+    bottom: 86px;
     width: auto;
     max-width: none;
-    z-index: 95;
+    z-index: 240;
     padding: 16px;
     border-radius: 18px;
     max-height: min(42vh, 320px);
@@ -213,7 +213,7 @@
   .panel {
     left: 8px;
     right: 8px;
-    bottom: 76px;
+    bottom: 82px;
     padding: 16px;
     max-height: min(48vh, 340px);
   }

@@ -133,14 +133,15 @@
 
 .navigationCard {
   position: absolute;
-  top: 46px;
-  left: 12px;
-  z-index: 8;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: min(320px, calc(100% - 24px));
-  padding: 12px;
+  width: min(560px, calc(100% - 24px));
+  padding: 14px 16px;
   border-radius: 18px;
   background: rgba(10, 16, 24, 0.76);
   border: 1px solid rgba(255, 255, 255, 0.10);
@@ -153,8 +154,10 @@
 .navigationCardHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
+  flex-wrap: wrap;
+  text-align: center;
 }
 
 .navigationActions {
@@ -162,6 +165,8 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .navigationPill {
@@ -237,12 +242,14 @@
   font-weight: 700;
   line-height: 1.35;
   color: #f4f8ff;
+  text-align: center;
 }
 
 .navigationMeta {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  justify-content: center;
   font-size: 10.5px;
   color: rgba(244, 248, 255, 0.76);
 }
@@ -260,6 +267,7 @@
   font-size: 10.5px;
   color: rgba(244, 248, 255, 0.78);
   line-height: 1.4;
+  text-align: center;
 }
 
 .controls {
@@ -307,8 +315,7 @@
 }
 
 .ctrlBtn:active,
-.navigationButton:active,
-.legendChip:active {
+.navigationButton:active {
   transform: translateY(0);
 }
 
@@ -479,62 +486,6 @@
   background: rgba(255, 255, 255, 0.10);
 }
 
-.legendBar {
-  position: absolute;
-  left: 12px;
-  bottom: 14px;
-  z-index: 8;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  max-width: min(420px, calc(100% - 24px));
-  padding: 8px;
-  border-radius: 16px;
-  background: rgba(10, 16, 24, 0.68);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(14px);
-  box-shadow:
-    0 16px 32px rgba(0, 0, 0, 0.18),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-}
-
-.legendChip {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(244, 248, 255, 0.82);
-  font-size: 10.5px;
-  font-family: var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
-}
-
-.legendChip:hover {
-  transform: translateY(-1px);
-  border-color: rgba(242, 181, 68, 0.30);
-  color: #ffffff;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10);
-}
-
-.legendChipOn {
-  background: rgba(15, 23, 42, 0.88);
-  border-color: rgba(242, 181, 68, 0.52);
-  color: #ffffff;
-}
-
-.legendDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  flex-shrink: 0;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.10) inset;
-}
-
 .scaleBar {
   position: absolute;
   left: 50%;
@@ -611,6 +562,10 @@
   background: transparent;
   border: 0;
   pointer-events: auto;
+}
+
+.markerDragging {
+  filter: drop-shadow(0 14px 24px rgba(0, 0, 0, 0.28));
 }
 
 .zoneMarker {
@@ -744,7 +699,6 @@
 :global(html[data-theme='light']) .planBadge,
 :global(html[data-theme='light']) .navigationCard,
 :global(html[data-theme='light']) .controls,
-:global(html[data-theme='light']) .legendBar,
 :global(html[data-theme='light']) .scaleBar,
 :global(html[data-theme='light']) .mapNote {
   background: rgba(255, 255, 255, 0.82);
@@ -818,18 +772,6 @@
   background: rgba(15, 94, 168, 0.12);
 }
 
-:global(html[data-theme='light']) .legendChip {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(15, 94, 168, 0.10);
-  color: var(--text);
-}
-
-:global(html[data-theme='light']) .legendChipOn {
-  background: rgba(15, 94, 168, 0.10);
-  border-color: rgba(15, 94, 168, 0.24);
-  color: var(--text);
-}
-
 :global(html[data-theme='light']) .zoneTooltip {
   background: rgba(255, 255, 255, 0.94);
   border-color: rgba(15, 94, 168, 0.16);
@@ -842,12 +784,6 @@
   }
 }
 
-@media (max-width: 980px) {
-  .legendBar {
-    max-width: min(360px, calc(100% - 24px));
-  }
-}
-
 @media (max-width: 760px) {
   .planBadge {
     left: 10px;
@@ -857,21 +793,23 @@
   }
 
   .navigationCard {
-    left: 10px;
-    right: 10px;
-    top: 92px;
+    top: 60px;
+    left: 50%;
+    right: auto;
     width: auto;
-    max-width: none;
+    max-width: calc(100% - 20px);
+    transform: translateX(-50%);
+    padding: 12px 14px;
   }
 
   .navigationCardHeader {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
   }
 
   .navigationActions {
     width: 100%;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .navigationCancel {
@@ -916,22 +854,6 @@
     font-size: 8.5px;
   }
 
-  .legendBar {
-    left: 10px;
-    bottom: 10px;
-    max-width: calc(100% - 20px);
-    padding: 7px;
-    gap: 6px;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .legendChip {
-    justify-content: center;
-    padding: 6px 8px;
-    font-size: 9px;
-  }
-
   .mapOverlayCard {
     width: min(320px, 100%);
     padding: 20px 18px;
@@ -968,18 +890,8 @@
   }
 
   .navigationCard {
-    top: 88px;
+    top: 58px;
+    max-width: calc(100% - 16px);
   }
 
-  .legendBar {
-    left: 8px;
-    right: 8px;
-    bottom: 8px;
-    max-width: none;
-    grid-template-columns: 1fr;
-  }
-
-  .legendChip {
-    width: 100%;
-  }
 }

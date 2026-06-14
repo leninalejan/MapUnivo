@@ -1,24 +1,26 @@
-// src/components/LoginScreen.jsx
 import { useState } from 'react'
-import { DEMO_USERS } from '../data/campusData.js'
+import { AUTH_USERS, AUTH_ROLE_LABELS } from '../data/authUsers.js'
 import { Icons } from './Icons.jsx'
 import styles from './LoginScreen.module.css'
 
 export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError]       = useState('')
-  const [loading, setLoading]   = useState(false)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
+
     setTimeout(() => {
-      const user = DEMO_USERS.find(u =>
-        (u.username === username.toLowerCase() || username.toLowerCase().includes(u.username)) &&
+      const value = username.trim().toLowerCase()
+      const user = AUTH_USERS.find(u =>
+        (u.username === value || value.includes(u.username)) &&
         u.password === password
       )
+
       if (user) {
         onLogin(user)
       } else {
@@ -28,7 +30,14 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
     }, 700)
   }
 
-  const fillDemo = (u) => { setUsername(u.username); setPassword(u.password); setError('') }
+  const fillDemo = (u) => {
+    setUsername(u.username)
+    setPassword(u.password)
+    setError('')
+  }
+
+  const normalUsers = AUTH_USERS.filter(u => u.access === 'normal')
+  const adminUsers = AUTH_USERS.filter(u => u.access === 'admin')
 
   return (
     <div className={styles.screen}>
@@ -42,7 +51,6 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
         {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
       </button>
 
-      {/* Animated background */}
       <div className={styles.bg}>
         <div className={`${styles.orb} ${styles.orb1}`} />
         <div className={`${styles.orb} ${styles.orb2}`} />
@@ -51,7 +59,6 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
       </div>
 
       <div className={styles.card}>
-        {/* Logo */}
         <div className={styles.logoRow}>
           <div className={styles.logoIcon}>
             <img
@@ -67,7 +74,7 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
 
         <h1 className={styles.title}>Acceso institucional</h1>
         <p className={styles.subtitle}>
-          Accede al mapa interactivo de la Universidad de Oriente en San Miguel
+          Accede al mapa interactivo de la Universidad de Oriente en San Miguel.
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -91,7 +98,7 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
               <span className={styles.fieldIcon}><Icons.Lock /></span>
               <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="********"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
                 required
@@ -115,13 +122,28 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
         </form>
 
         <div className={styles.hint}>
-          <span>Cuentas de prueba del campus:</span>
-          <div className={styles.chips}>
-            {DEMO_USERS.map(u => (
-              <button key={u.username} className={styles.chip} onClick={() => fillDemo(u)}>
-                {u.username} / {u.password}
-              </button>
-            ))}
+          <span>Usa estas cuentas de prueba:</span>
+
+          <div className={styles.group}>
+            <span className={styles.groupLabel}>{AUTH_ROLE_LABELS.normal}</span>
+            <div className={styles.chips}>
+              {normalUsers.map(u => (
+                <button key={u.username} type="button" className={styles.chip} onClick={() => fillDemo(u)}>
+                  {u.username} / {u.password}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.group}>
+            <span className={styles.groupLabel}>{AUTH_ROLE_LABELS.admin}</span>
+            <div className={styles.chips}>
+              {adminUsers.map(u => (
+                <button key={u.username} type="button" className={styles.chip} onClick={() => fillDemo(u)}>
+                  {u.username} / {u.password}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

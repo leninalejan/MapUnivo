@@ -7,7 +7,8 @@
     linear-gradient(180deg, rgba(255,255,255,0.02), transparent),
     var(--surface);
   border-bottom: 1px solid var(--border);
-  z-index: 50; height: 56px;
+  z-index: 120;
+  min-height: 56px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.04);
 }
 
@@ -174,6 +175,34 @@
 
   .brandName {
     font-size: 14px;
+  }
+}
+
+@media (min-width: 769px) {
+  .topbar {
+    position: sticky;
+    top: 10px;
+    margin: 10px 12px 0;
+    width: calc(100% - 24px);
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.20), transparent),
+      rgba(255, 255, 255, 0.72);
+    box-shadow:
+      0 18px 36px rgba(15, 23, 42, 0.12),
+      0 0 0 1px rgba(255,255,255,0.16) inset;
+  }
+
+  :global(html[data-theme='dark']) .topbar {
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.06), transparent),
+      rgba(10, 16, 24, 0.82);
+  }
+
+  .searchWrap {
+    max-width: 560px;
   }
 }
 

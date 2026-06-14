@@ -107,6 +107,27 @@ CREATE INDEX idx_sesiones_token  ON sesiones(token_hash);
 CREATE INDEX idx_sesiones_exp    ON sesiones(expira_en);
 
 -- ----------------------------------------------------------
+-- ESTADO COMPARTIDO DEL MAPA
+-- ----------------------------------------------------------
+CREATE TABLE app_state (
+    key         TEXT PRIMARY KEY,
+    value       JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO app_state (key, value) VALUES (
+    'map_state',
+    '{
+      "siteContent": {
+        "bannerTitle": "Bienvenido a MapUNIVO",
+        "bannerBody": "Consulta el campus, ubica zonas y, si eres administrador, actualiza este mensaje desde el menu de usuario."
+      },
+      "zonePositions": {},
+      "customZones": []
+    }'::jsonb
+) ON CONFLICT (key) DO NOTHING;
+
+-- ----------------------------------------------------------
 -- SEED — Zonas iniciales del campus
 -- ----------------------------------------------------------
 INSERT INTO zonas (slug, nombre, descripcion, categoria, icono, color_hex, latitud, longitud, horario, telefono) VALUES

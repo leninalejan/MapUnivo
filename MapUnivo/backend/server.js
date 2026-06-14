@@ -35,6 +35,7 @@ app.use(express.json())
 app.use('/api/auth', require('./routes/auth'))
 app.use('/api/zonas', require('./routes/zonas'))
 app.use('/api/salones', require('./routes/salones'))
+app.use('/api/map-state', require('./routes/map-state'))
 
 app.get('/api/health', async (_, res) => {
   const health = {

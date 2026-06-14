@@ -6,7 +6,11 @@
   border: 1px solid var(--border2);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg), 0 0 0 1px rgba(255,255,255,0.03) inset;
-  overflow: hidden;
+  overflow: auto;
+  max-height: min(72vh, 660px);
+  display: flex;
+  flex-direction: column;
+  scrollbar-gutter: stable;
 }
 
 .header {
@@ -125,11 +129,13 @@
 @media (max-width: 760px) {
   .panel {
     width: min(320px, calc(100vw - 24px));
+    max-height: calc(100vh - 140px);
   }
 }
 
 @media (max-width: 520px) {
   .panel {
     width: calc(100vw - 20px);
+    max-height: calc(100vh - 160px);
   }
 }

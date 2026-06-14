@@ -1,16 +1,17 @@
 /* src/App.module.css */
 .app {
   display: grid;
-  grid-template-rows: 56px 1fr 26px;
-  grid-template-columns: var(--sidebar-width, 290px) 1fr;
+  grid-template-rows: auto minmax(0, 1fr) 26px;
+  grid-template-columns: 1fr;
   grid-template-areas:
-    "topbar     topbar"
-    "sidebar    map"
-    "statusbar  statusbar";
+    "topbar"
+    "map"
+    "statusbar";
   height: 100vh;
   height: 100dvh;
   width: 100vw;
   overflow: hidden;
+  isolation: isolate;
 }
 
 .mapWrapper {
@@ -19,10 +20,127 @@
   min-width: 0;
   min-height: 0;
   overflow: hidden;
+  isolation: isolate;
+  background-color: #0b1320;
   background:
     radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.08), transparent 24%),
     radial-gradient(circle at 80% 30%, rgba(15, 94, 168, 0.10), transparent 28%),
     linear-gradient(135deg, #0b1320 0%, #101b2a 55%, #0e1a1f 100%);
+}
+
+.siteBanner {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  z-index: 160;
+  transform: translateX(-50%);
+  width: min(760px, calc(100% - 24px));
+  pointer-events: none;
+}
+
+.siteBannerInner {
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(8, 14, 22, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(14px);
+  color: #f4f8ff;
+}
+
+.siteBannerTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.siteBannerBody {
+  margin-top: 4px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: rgba(244, 248, 255, 0.82);
+}
+
+.adminZoneMenu {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 230;
+  width: min(320px, calc(100% - 24px));
+  max-height: calc(100dvh - 98px);
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(10, 16, 24, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(14px);
+  color: #f4f8ff;
+  overflow: auto;
+}
+
+.adminZoneHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.adminZoneTitle {
+  font-size: 0.98rem;
+  font-weight: 800;
+}
+
+.adminZoneSubtitle {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: rgba(244, 248, 255, 0.72);
+}
+
+.adminZoneClose {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f8ff;
+  font-size: 18px;
+}
+
+.adminZoneActions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.adminZoneButton {
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4f8ff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.adminZoneButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.adminZoneDanger {
+  background: rgba(212, 77, 77, 0.16);
+  border-color: rgba(212, 77, 77, 0.26);
+}
+
+.adminZoneDanger:hover {
+  background: rgba(212, 77, 77, 0.24);
+}
+
+.adminZoneDelete {
+  background: rgba(212, 77, 77, 0.28);
+  border-color: rgba(212, 77, 77, 0.36);
+}
+
+.adminZoneDelete:hover {
+  background: rgba(212, 77, 77, 0.36);
 }
 
 :global(html[data-theme='light']) .mapWrapper {
@@ -36,20 +154,20 @@
   position: absolute;
   top: 14px;
   right: 62px;
-  z-index: 30;
+  z-index: 190;
 }
 
 .mapModePanelAnchor {
   position: absolute;
   top: 14px;
   right: 14px;
-  z-index: 30;
+  z-index: 190;
 }
 
 .mobileBackdrop {
   position: absolute;
   inset: 0;
-  z-index: 70;
+  z-index: 150;
   background: rgba(6, 10, 16, 0.38);
   backdrop-filter: blur(1px);
 }
@@ -61,7 +179,7 @@
 .mapLoading {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -176,12 +294,7 @@
 
 @media (max-width: 768px) {
   .app {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr 28px;
-    grid-template-areas:
-      "topbar"
-      "map"
-      "statusbar";
+    grid-template-rows: auto minmax(0, 1fr) 28px;
     height: 100dvh;
   }
 
@@ -198,16 +311,29 @@
     top: 92px;
     right: 10px;
   }
+
+  .siteBanner {
+    top: 86px;
+    width: calc(100% - 20px);
+  }
+
+.adminZoneMenu {
+    top: 92px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    max-height: calc(100dvh - 116px);
+  }
 }
 
 @media (max-width: 520px) {
   .app {
-    grid-template-rows: auto 1fr 34px;
+    grid-template-rows: auto minmax(0, 1fr) 34px;
     height: 100dvh;
   }
 
   .mapWrapper {
-    min-height: calc(100dvh - 126px);
+    min-height: 0;
   }
 
   .mapLoading {
@@ -217,6 +343,25 @@
   .mapLoadingCard {
     padding: 20px 18px;
     border-radius: 18px;
+  }
+
+  .siteBanner {
+    top: 80px;
+  }
+
+  .siteBannerInner {
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .adminZoneMenu {
+    top: 86px;
+    right: 8px;
+    left: 8px;
+    width: auto;
+    padding: 12px;
+    border-radius: 16px;
+    max-height: calc(100dvh - 104px);
   }
 
   .appError {

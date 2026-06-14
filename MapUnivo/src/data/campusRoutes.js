@@ -98,10 +98,10 @@ function distanceBetween(a, b) {
   return Math.hypot(dy, dx)
 }
 
-function buildGraph(origin, destination) {
+function buildGraph(zones = CAMPUS_ZONES) {
   const nodes = {}
 
-  CAMPUS_ZONES.forEach(zone => {
+  zones.forEach(zone => {
     nodes[zone.id] = {
       point: pointFromZone(zone),
       links: [...(ZONE_LINKS[zone.id] || [])],
@@ -197,11 +197,11 @@ function estimateRouteStats(points) {
   return { distanceMeters, durationMinutes }
 }
 
-export function findCampusLocation(query) {
+export function findCampusLocation(query, zones = CAMPUS_ZONES) {
   const normalizedQuery = normalizeText(query)
   if (!normalizedQuery) return null
 
-  const scored = CAMPUS_ZONES
+  const scored = zones
     .map(zone => {
       const fields = [zone.name, zone.id, zone.badge, zone.cat, zone.desc]
       const normalizedFields = fields.map(normalizeText)
@@ -223,23 +223,23 @@ export function findCampusLocation(query) {
   return scored[0]?.zone || null
 }
 
-export function getRouteNodeLabel(id) {
-  const zone = CAMPUS_ZONES.find(item => item.id === id)
+export function getRouteNodeLabel(id, zones = CAMPUS_ZONES) {
+  const zone = zones.find(item => item.id === id)
   if (zone) return zone.name
 
   return ROUTE_NODE_LABELS[id] || String(id || '').replaceAll('_', ' ')
 }
 
-export function getRouteGuide(route) {
+export function getRouteGuide(route, zones = CAMPUS_ZONES) {
   if (!route?.pathIds?.length) return []
 
   return route.pathIds.map((id, index) => {
-    const zone = CAMPUS_ZONES.find(item => item.id === id)
+    const zone = zones.find(item => item.id === id)
 
     return {
       id,
       index,
-      label: getRouteNodeLabel(id),
+      label: getRouteNodeLabel(id, zones),
       tag: zone?.badge || 'NODO',
       color: zone?.color || '#0F5EA8',
       isZone: !!zone,
@@ -249,7 +249,7 @@ export function getRouteGuide(route) {
   })
 }
 
-export function buildCampusRoute(origin, destination) {
+export function buildCampusRoute(origin, destination, zones = CAMPUS_ZONES) {
   if (!origin || !destination) return null
   if (origin.id === destination.id) return null
 

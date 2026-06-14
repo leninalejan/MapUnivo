@@ -56,7 +56,9 @@
 html, body, #root {
   height: 100%;
   min-height: 100dvh;
+  width: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 body {
   background: var(--bg);
@@ -64,6 +66,7 @@ body {
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.2s ease, color 0.2s ease;
+  min-height: 100dvh;
 }
 input, button, select, textarea { font-family: var(--font); }
 button { cursor: pointer; border: none; background: none; color: inherit; }
