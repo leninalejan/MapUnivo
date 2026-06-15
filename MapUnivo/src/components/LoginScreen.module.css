@@ -6,7 +6,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--hero-bg);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(242, 181, 68, 0.10), transparent 28%),
+    radial-gradient(circle at 80% 78%, rgba(15, 94, 168, 0.14), transparent 30%),
+    var(--hero-bg);
   overflow: hidden;
 }
 
@@ -31,6 +34,29 @@
 .themeBtn svg { width: 18px; height: 18px; }
 
 .bg { position: absolute; inset: 0; pointer-events: none; }
+.campusBackdrop {
+  position: absolute;
+  inset: -4%;
+  background-image:
+    linear-gradient(180deg, rgba(7, 14, 22, 0.18), rgba(7, 14, 22, 0.34)),
+    url('../assets/BackUnivo.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: blur(7px) saturate(1.04) contrast(1.04) brightness(1.02);
+  opacity: 0.52;
+  transform: scale(1.04);
+  z-index: 0;
+}
+.campusBackdrop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(242, 181, 68, 0.10), transparent 28%),
+    radial-gradient(circle at 70% 72%, rgba(15, 94, 168, 0.08), transparent 30%),
+    linear-gradient(135deg, rgba(8, 14, 22, 0.04), rgba(8, 14, 22, 0.18));
+}
 .orb {
   position: absolute;
   border-radius: 50%;
@@ -47,18 +73,94 @@
     linear-gradient(rgba(15,94,168,0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgba(15,94,168,0.05) 1px, transparent 1px);
   background-size: 50px 50px;
+  z-index: 1;
+  mix-blend-mode: soft-light;
 }
 
 .card {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 420px;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  border-radius: 22px;
   padding: 44px 40px;
-  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(28,156,114,0.05);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.20),
+    0 0 0 1px rgba(255, 255, 255, 0.14) inset;
+  backdrop-filter: blur(22px) saturate(1.08);
+  -webkit-backdrop-filter: blur(22px) saturate(1.08);
   animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.32), transparent 42%),
+    radial-gradient(circle at top right, rgba(242, 181, 68, 0.12), transparent 34%);
+  pointer-events: none;
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+:global(html[data-theme='dark']) .campusBackdrop {
+  background-image:
+    linear-gradient(180deg, rgba(3, 8, 14, 0.26), rgba(3, 8, 14, 0.58)),
+    url('../assets/BackUnivo.jpg');
+  opacity: 0.46;
+  filter: blur(8px) saturate(1.06) contrast(1.02) brightness(0.90);
+}
+
+:global(html[data-theme='light']) .campusBackdrop {
+  opacity: 0.54;
+  filter: blur(6px) saturate(1.05) contrast(1.05) brightness(1.03);
+}
+
+:global(html[data-theme='dark']) .card {
+  background: rgba(9, 15, 23, 0.72);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+}
+
+:global(html[data-theme='dark']) .card::before {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.10), transparent 44%),
+    radial-gradient(circle at top right, rgba(242, 181, 68, 0.10), transparent 34%);
+}
+
+:global(html[data-theme='light']) .card {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(255, 255, 255, 0.48);
+}
+
+:global(html[data-theme='light']) .title {
+  color: #132238;
+}
+
+:global(html[data-theme='dark']) .title {
+  color: #f4f8ff;
+}
+
+:global(html[data-theme='light']) .subtitle,
+:global(html[data-theme='light']) .groupLabel,
+:global(html[data-theme='light']) .hint,
+:global(html[data-theme='light']) .label {
+  color: rgba(17, 29, 45, 0.68);
+}
+
+:global(html[data-theme='dark']) .subtitle,
+:global(html[data-theme='dark']) .groupLabel,
+:global(html[data-theme='dark']) .hint,
+:global(html[data-theme='dark']) .label {
+  color: rgba(244, 248, 255, 0.72);
 }
 
 .logoRow {

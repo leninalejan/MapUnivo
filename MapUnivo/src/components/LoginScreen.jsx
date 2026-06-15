@@ -52,6 +52,7 @@ export default function LoginScreen({ onLogin, theme, onToggleTheme }) {
       </button>
 
       <div className={styles.bg}>
+        <div className={styles.campusBackdrop} />
         <div className={`${styles.orb} ${styles.orb1}`} />
         <div className={`${styles.orb} ${styles.orb2}`} />
         <div className={`${styles.orb} ${styles.orb3}`} />

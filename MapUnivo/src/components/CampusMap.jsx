@@ -132,6 +132,7 @@ export default function CampusMap({
   const mapModeRef = useRef(mapMode)
   const markerRefs = useRef({})
   const routeLayerRef = useRef(null)
+  const routeRendererRef = useRef(null)
   const onZoneClickRef = useRef(onZoneClick)
   const onAdminPinClickRef = useRef(onAdminPinClick)
   const onUpdateZonePositionRef = useRef(onUpdateZonePosition)
@@ -187,6 +188,9 @@ export default function CampusMap({
 
     const routePane = map.createPane('campus-route')
     routePane.style.zIndex = '550'
+    const routeRenderer = L.svg({ pane: 'campus-route' })
+    routeRenderer.addTo(map)
+    routeRendererRef.current = routeRenderer
 
     const baseLayer = L.imageOverlay(getBaseMapUrl(mapMode, theme), MAP_BOUNDS, {
       pane: 'campus-base',
@@ -346,6 +350,8 @@ export default function CampusMap({
       baseLayerRef.current = null
       routeLayerRef.current?.remove()
       routeLayerRef.current = null
+      routeRendererRef.current?.remove()
+      routeRendererRef.current = null
       map.remove()
       markerRefs.current = {}
       mapRef.current = null
@@ -420,20 +426,21 @@ export default function CampusMap({
     routeLayerRef.current?.remove()
     routeLayerRef.current = null
 
-      if (!route?.points?.length) {
-        if (!activeZone) {
-          try {
-            map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: false })
-          } catch {
-            map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], -0.25, { animate: false })
-          }
+    if (!route?.points?.length) {
+      if (!activeZone) {
+        try {
+          map.fitBounds(MAP_BOUNDS, { padding: getFitPadding(map), animate: false })
+        } catch {
+          map.setView([MAP_HEIGHT / 2, MAP_WIDTH / 2], -0.25, { animate: false })
         }
-        return
+      }
+      return
     }
 
     const routeGroup = L.layerGroup()
     const baseLine = L.polyline(route.points, {
       pane: 'campus-route',
+      renderer: routeRendererRef.current || undefined,
       color: '#0f5ea8',
       weight: 10,
       opacity: 0.36,
@@ -443,6 +450,7 @@ export default function CampusMap({
     })
     const routeLine = L.polyline(route.points, {
       pane: 'campus-route',
+      renderer: routeRendererRef.current || undefined,
       color: '#f2b544',
       weight: 5,
       opacity: 0.98,
@@ -452,6 +460,7 @@ export default function CampusMap({
     })
     const startMarker = L.circleMarker(route.points[0], {
       pane: 'campus-route',
+      renderer: routeRendererRef.current || undefined,
       radius: 7,
       color: '#ffffff',
       weight: 2,
@@ -462,6 +471,7 @@ export default function CampusMap({
     })
     const endMarker = L.circleMarker(route.points[route.points.length - 1], {
       pane: 'campus-route',
+      renderer: routeRendererRef.current || undefined,
       radius: 7,
       color: '#ffffff',
       weight: 2,
