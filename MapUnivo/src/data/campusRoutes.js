@@ -98,8 +98,21 @@ function distanceBetween(a, b) {
   return Math.hypot(dy, dx)
 }
 
+function addLink(nodes, fromId, toId) {
+  if (!nodes[fromId] || !nodes[toId] || fromId === toId) return
+
+  if (!nodes[fromId].links.includes(toId)) {
+    nodes[fromId].links.push(toId)
+  }
+
+  if (!nodes[toId].links.includes(fromId)) {
+    nodes[toId].links.push(fromId)
+  }
+}
+
 function buildGraph(zones = CAMPUS_ZONES) {
   const nodes = {}
+  const zoneById = new Map(zones.map(zone => [zone.id, zone]))
 
   zones.forEach(zone => {
     nodes[zone.id] = {
@@ -116,13 +129,37 @@ function buildGraph(zones = CAMPUS_ZONES) {
   })
 
   HUB_EDGES.forEach(([a, b]) => {
-    if (!nodes[a]) return
-    if (!nodes[b]) return
-    if (!nodes[a].links.includes(b)) nodes[a].links.push(b)
-    if (!nodes[b].links.includes(a)) nodes[b].links.push(a)
+    addLink(nodes, a, b)
   })
 
+  const anchorIds = Object.keys(nodes).filter(id => {
+    const zone = zoneById.get(id)
+    return !zone || !zone.custom
+  })
+
+  zones
+    .filter(zone => zone.custom)
+    .forEach(zone => {
+      const nearestAnchors = anchorIds
+        .map(id => ({
+          id,
+          distance: distanceBetween(pointFromZone(zone), nodes[id].point),
+        }))
+        .sort((a, b) => a.distance - b.distance)
+        .slice(0, 2)
+
+      nearestAnchors.forEach(anchor => {
+        addLink(nodes, zone.id, anchor.id)
+      })
+    })
+
   return nodes
+}
+
+function getPathPoints(pathIds, nodes) {
+  return pathIds
+    .map(id => nodes[id]?.point)
+    .filter(Boolean)
 }
 
 function shortestPath(nodes, startId, endId) {
@@ -253,8 +290,12 @@ export function buildCampusRoute(origin, destination, zones = CAMPUS_ZONES) {
   if (!origin || !destination) return null
   if (origin.id === destination.id) return null
 
-  const points = [pointFromZone(origin), pointFromZone(destination)]
-  const pathIds = [origin.id, destination.id]
+  const graph = buildGraph(zones)
+  const pathIds = shortestPath(graph, origin.id, destination.id) || [origin.id, destination.id]
+  const points = getPathPoints(pathIds, graph)
+  if (points.length < 2) {
+    points.splice(0, points.length, pointFromZone(origin), pointFromZone(destination))
+  }
   const { distanceMeters, durationMinutes } = estimateRouteStats(points)
 
   return {
