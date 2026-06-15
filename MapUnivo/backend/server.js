@@ -21,12 +21,12 @@ const allowedOrigins = new Set([
   ...parseOrigins(process.env.FRONTEND_URLS),
 ])
 
+
 app.use(cors({
   origin(origin, callback) {
     if (!origin || allowedOrigins.has(origin)) {
       return callback(null, true)
     }
-
     return callback(new Error(`Origen no permitido por CORS: ${origin}`))
   },
 }))

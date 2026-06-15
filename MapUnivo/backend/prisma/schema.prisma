@@ -1,0 +1,99 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model favoritos {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  usuario_id String?   @db.Uuid
+  zona_id    String?   @db.Uuid
+  creado_en  DateTime? @default(now()) @db.Timestamptz(6)
+  usuarios   usuarios? @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  zonas      zonas?    @relation(fields: [zona_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([usuario_id, zona_id])
+}
+
+model rutas {
+  id                               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  desde_zona_id                    String?  @db.Uuid
+  hasta_zona_id                    String?  @db.Uuid
+  distancia_m                      Int?
+  tiempo_min                       Int?
+  instrucciones                    Json?    @default("[]")
+  activo                           Boolean? @default(true)
+  zonas_rutas_desde_zona_idTozonas zonas?   @relation("rutas_desde_zona_idTozonas", fields: [desde_zona_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  zonas_rutas_hasta_zona_idTozonas zonas?   @relation("rutas_hasta_zona_idTozonas", fields: [hasta_zona_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model salones {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  zona_id      String?  @db.Uuid
+  codigo       String   @unique @db.VarChar(20)
+  nombre       String   @db.VarChar(120)
+  piso         Int?     @default(1)
+  capacidad    Int?
+  tipo         String?  @db.VarChar(50)
+  equipamiento Json?    @default("{}")
+  latitud      Decimal? @db.Decimal(10, 7)
+  longitud     Decimal? @db.Decimal(10, 7)
+  activo       Boolean? @default(true)
+  zonas        zonas?   @relation(fields: [zona_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([zona_id], map: "idx_salones_zona")
+}
+
+model sesiones {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  usuario_id String?   @db.Uuid
+  token_hash String    @db.VarChar(255)
+  ip         String?   @db.Inet
+  user_agent String?
+  creado_en  DateTime? @default(now()) @db.Timestamptz(6)
+  expira_en  DateTime  @db.Timestamptz(6)
+  activo     Boolean?  @default(true)
+  usuarios   usuarios? @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([expira_en], map: "idx_sesiones_exp")
+  @@index([token_hash], map: "idx_sesiones_token")
+}
+
+model usuarios {
+  id            String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  carnet        String      @unique @db.VarChar(20)
+  nombre        String      @db.VarChar(120)
+  apellido      String      @db.VarChar(120)
+  email         String      @unique @db.VarChar(200)
+  password_hash String      @db.VarChar(255)
+  rol           String      @default("estudiante") @db.VarChar(30)
+  facultad      String?     @db.VarChar(100)
+  carrera       String?     @db.VarChar(100)
+  activo        Boolean?    @default(true)
+  creado_en     DateTime?   @default(now()) @db.Timestamptz(6)
+  ultimo_acceso DateTime?   @db.Timestamptz(6)
+  favoritos     favoritos[]
+  sesiones      sesiones[]
+}
+
+model zonas {
+  id                               String      @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  slug                             String      @unique @db.VarChar(60)
+  nombre                           String      @db.VarChar(120)
+  descripcion                      String?
+  categoria                        String      @db.VarChar(50)
+  icono                            String?     @db.VarChar(10)
+  color_hex                        String?     @db.VarChar(7)
+  latitud                          Decimal     @db.Decimal(10, 7)
+  longitud                         Decimal     @db.Decimal(10, 7)
+  horario                          String?     @db.VarChar(200)
+  telefono                         String?     @db.VarChar(50)
+  activo                           Boolean?    @default(true)
+  orden                            Int?        @default(0)
+  favoritos                        favoritos[]
+  rutas_rutas_desde_zona_idTozonas rutas[]     @relation("rutas_desde_zona_idTozonas")
+  rutas_rutas_hasta_zona_idTozonas rutas[]     @relation("rutas_hasta_zona_idTozonas")
+  salones                          salones[]
+
+  @@index([activo], map: "idx_zonas_activo")
+  @@index([categoria], map: "idx_zonas_categoria")
+}
